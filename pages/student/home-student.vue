@@ -1,146 +1,201 @@
 <template>
-  <div class="sidebar">
-    <div class="profile">
-      <div class="avatar"></div>
-      <div class="user-info">
-        <p class="name">นาย xxx xxx</p>
-        <p class="details">ชั้น ม.5/1 รหัสประจำตัว xxxxxxxxxx-x</p>
+  <Head>
+    <link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet">
+  </Head>
+  <div class="container">
+    <div class="sidebar">
+      <div class="profile-section">
+        <div class="profile-image">
+          <img :src="profileImage" alt="Profile Image" />
+        </div>
+        <p class="profile-name">{{ name }}</p>
+        <p class="profile-detail">{{ studentClass }} รหัสประจำตัว {{ id }}</p>
+      </div>
+      <div class="menu">
+        <router-link to="/home" class="menu-item">
+          <i><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></i>
+          <span>หน้าแรก</span>
+        </router-link>
+        <router-link to="/profile" class="menu-item">
+          <i><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></i>
+          <span>โปรไฟล์</span>
+        </router-link>
+        <router-link to="/booking" class="menu-item">
+          <i><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></i>
+          <span>จองวันเยี่ยมบ้าน</span>
+        </router-link>
+      </div>
+      <div class="logout-section">
+        <button class="logout-button" @click="logout">
+          <i><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></i>
+          <span>Logout</span>
+        </button>
       </div>
     </div>
-    <div class="menu">
-      <nuxt-link to="/" class="menu-item">
-        <i class="icon-home"></i>
-        หน้าแรก
-      </nuxt-link>
-      <nuxt-link to="/profile" class="menu-item">
-        <i class="icon-profile"></i>
-        โปรไฟล์
-      </nuxt-link>
-      <nuxt-link to="/appointment" class="menu-item">
-        <i class="icon-calendar"></i>
-        จองวันเยี่ยมบ้าน
-      </nuxt-link>
-    </div>
-    <div class="logout">
-      <button @click="logout" class="logout-button">
-        <i class="icon-logout"></i>
-        Logout
-      </button>
+    
+    <div class="main-content">
+      <div class="header">
+        <h1>HOME ENGAGE</h1>
+      </div>
+      <div class="content-area">
+        <!-- ใส่เนื้อหาที่คุณต้องการที่นี่ -->
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    logout() {
-      // เขียน logic การ logout ที่นี่
-      console.log('User logged out');
-    }
-  }
+<script setup>
+import { useRouter } from 'vue-router'
+
+const profileImage = new URL('@/assets/images/User.png', import.meta.url).href;
+const name = "นาย xxx xxx"
+const studentClass = "ชั้นม.5/1"
+const id = "xxxxxxxxx-x"
+
+const router = useRouter()
+
+const logout = () => {
+  console.log("Logging out...");
+  router.push('/')
 }
 </script>
 
 <style scoped>
-.sidebar {
-  width: 260px;
-  background-color: #ffffff;
-  padding: 30px 20px;
-  border-right: 1px solid #e0e0e0;
+.container {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   height: 100vh;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ sidebar */
-  transition: all 0.3s ease-in-out;
 }
 
-.profile {
+.sidebar {
+  width: 280px;
+  background-color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-bottom: 30px;
+  padding: 0;
+  border-right: 1px solid #e0e0e0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.avatar {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background-color: #d8d8d8;
-  margin-bottom: 15px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* เพิ่มเงาให้ avatar */
-}
-
-.user-info {
+.profile-section {
   text-align: center;
+  padding: 30px 0;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.name {
-  font-weight: bold;
-  margin-bottom: 5px;
-  font-size: 1.1em;
+.profile-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  object-fit: cover;
+}
+
+.profile-name {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 500;
   color: #333;
 }
 
-.details {
-  font-size: 0.9em;
+.profile-detail {
+  font-size: 14px;
   color: #888;
+  margin-top: 5px;
+  margin-bottom: 0;
 }
 
 .menu {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 12px 0;
-  font-size: 1.1em;
+  padding: 12px 25px;
+  font-size: 16px;
   color: #333;
   text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .menu-item i {
-  margin-right: 12px;
-  font-size: 1.2em;
+  margin-right: 15px;
+  color: #56A7F5;
+  font-size: 18px;
+}
+
+.menu-item span {
+  flex: 1;
 }
 
 .menu-item:hover {
-  background-color: #f5f5f5; /* เพิ่มสีเมื่อ hover */
-  color: #1976d2; /* เปลี่ยนสีเมื่อ hover */
+  background-color: #f9f9f9;
+  color: #56A7F5;
 }
 
-.logout {
-  margin-top: 20px;
+.logout-section {
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 0;
+  text-align: center;
 }
 
 .logout-button {
-  width: 100%;
   background-color: #ff6b6b;
   color: white;
-  padding: 12px;
   border: none;
-  border-radius: 5px;
-  font-size: 1.1em;
+  padding: 12px 25px;
+  font-size: 16px;
   cursor: pointer;
+  border-radius: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 4px 8px rgba(255, 107, 107, 0.3); /* เพิ่มเงาให้ปุ่ม logout */
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.3s ease;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 10px;
 }
 
 .logout-button i {
   margin-right: 10px;
-  font-size: 1.2em;
+  font-size: 16px;
 }
 
 .logout-button:hover {
   background-color: #ff5252;
-  box-shadow: 0px 6px 12px rgba(255, 82, 82, 0.4); /* เพิ่มเงาเมื่อ hover */
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+.header {
+  background-color: #56A7F5;
+  padding: 5px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 80px;
+}
+
+.header h1 {
+  font-size: 38px;
+  font-weight: 400;
+  color: white;
+  font-family: "Sriracha", cursive;
+  margin-left: 20px;
+}
+
+.content-area {
+  flex: 1;
+  background-color: #EAE5E5;
+  margin: 20px;
+  border-radius: 10px;
 }
 </style>

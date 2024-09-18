@@ -57,6 +57,11 @@ export default {
       console.log('Username:', this.username);
       console.log('Password:', this.password);
       // เพิ่ม logic สำหรับการส่งข้อมูลไปยัง backend
+
+      if (this.userType === 'student') {
+      // เปลี่ยนเส้นทางไปที่หน้า home-student เมื่อเป็นนักเรียน
+      this.$router.push('/student/home-student');
+    }
     }
   }
 };
