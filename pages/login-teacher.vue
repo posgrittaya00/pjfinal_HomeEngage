@@ -1,4 +1,7 @@
 <template>
+  <head>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
   <div class="login-container">
     <div class="login-box">
       <h2 class="login-title">เข้าสู่ระบบ</h2>
@@ -20,13 +23,13 @@
         <input 
           type="text" 
           v-model="username" 
-          placeholder="รหัสประจำตัวครู" 
+          placeholder="รหัสประจำตัวคุณครู / อาจารย์" 
           class="login-input"
         />
         <input 
           type="password" 
           v-model="password" 
-          placeholder="รหัสประจำตัวครู" 
+          placeholder="รหัสประจำตัวคุณครู / อาจารย์" 
           class="login-input"
         />
         <button type="submit" class="login-button">เข้าสู่ระบบ</button>
@@ -39,7 +42,7 @@
 export default {
   data() {
     return {
-      userType: 'teacher', // ค่าเริ่มต้นเป็นนักเรียน
+      userType: 'teacher',
       username: '',
       password: ''
     };
@@ -48,7 +51,6 @@ export default {
   setUserType(type) {
     this.userType = type;
     if (type === 'student') {
-      // ถ้าเลือกเป็นนักเรียน ให้ไปที่หน้า login-student
       this.$router.push('/');
     }
   },
@@ -62,29 +64,39 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+body {
+  background-image: url('/images/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+}
+
 .login-container {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f0f2f5;
+  position: relative;
+  z-index: 1;
 }
 
 .login-box {
-  width: 600px;  /* ลดขนาดของกล่อง */
-  padding: 60px 30px;  /* เพิ่ม padding ให้มากขึ้น */
+  width: 600px;
+  padding: 60px 30px;
   border-radius: 16px;
   background: #FFF;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);  /* เงาเบาๆ */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .login-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 2em;
+  font-family: "IBM Plex Sans Thai", sans-serif;
+  font-size: 2.5em;
   color: #333;
   margin-bottom: 30px;
 }
@@ -100,7 +112,7 @@ export default {
   height: 52px;
   flex-shrink: 0;
   border-radius: 15px;
-  background: #d3d3d3; /* ตั้งสีพื้นหลังเริ่มต้นเป็นสีเทา */
+  background: #d3d3d3;
   color: white;
   border: none;
   margin: 0 10px;
@@ -110,7 +122,7 @@ export default {
 }
 
 .user-type-buttons button.active {
-  background-color: #56A7F5; /* เมื่อกดเลือก ให้เป็นสีฟ้า */
+  background-color: #56A7F5;
 }
 
 .user-type-buttons button:hover {

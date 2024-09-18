@@ -1,4 +1,7 @@
 <template>
+  <head>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
   <div class="login-container">
     <div class="login-box">
       <h2 class="login-title">เข้าสู่ระบบ</h2>
@@ -20,13 +23,13 @@
         <input 
           type="text" 
           v-model="username" 
-          placeholder="รหัสประจำตัวนักเรียน" 
+          placeholder="รหัสประจำตัวนักเรียน / นักศึกษา" 
           class="login-input"
         />
         <input 
           type="password" 
           v-model="password" 
-          placeholder="รหัสประจำตัวนักเรียน" 
+          placeholder="รหัสประจำตัวนักเรียน / นักศึกษา" 
           class="login-input"
         />
         <button type="submit" class="login-button">เข้าสู่ระบบ</button>
@@ -48,7 +51,6 @@ export default {
     setUserType(type) {
       this.userType = type;
       if (type === 'teacher') {
-        // ถ้าเลือกเป็นนักเรียน ให้ไปที่หน้า login-student
         this.$router.push('/login-teacher');
       }
     },
@@ -67,13 +69,23 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+body {
+  background-image: url('/images/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+}
+
 .login-container {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f0f2f5;
+  position: relative;
+  z-index: 1;
 }
 
 .login-box {
@@ -88,8 +100,8 @@ export default {
 }
 
 .login-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 2em;
+  font-family: "IBM Plex Sans Thai", sans-serif;
+  font-size: 2.5em;
   color: #333;
   margin-bottom: 30px;
 }

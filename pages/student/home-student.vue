@@ -1,15 +1,16 @@
 <template>
   <Head>
-    <link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   </Head>
   <div class="container">
     <div class="sidebar">
       <div class="profile-section">
         <div class="profile-image">
-          <img :src="profileImage" alt="Profile Image" />
+          <img :src="user.profileImage" alt="Profile Image" />
         </div>
-        <p class="profile-name">{{ name }}</p>
-        <p class="profile-detail">{{ studentClass }} รหัสประจำตัว {{ id }}</p>
+        <p class="profile-name">{{ user.name }}</p>
+        <p class="profile-detail">{{ user.studentClass }} รหัสประจำตัว {{ user.studentId }}</p>
       </div>
       <div class="menu">
         <router-link to="/home" class="menu-item">
@@ -46,11 +47,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-
-const profileImage = new URL('@/assets/images/User.png', import.meta.url).href;
-const name = "นาย xxx xxx"
-const studentClass = "ชั้นม.5/1"
-const id = "xxxxxxxxx-x"
+const user = {profileImage:'/images/User.png', name: "นาย xxx xxx", studentClass: "ชั้นม.5/1", studentId: "xxxxxxxxx-x"}
 
 const router = useRouter()
 
@@ -61,9 +58,11 @@ const logout = () => {
 </script>
 
 <style scoped>
+
 .container {
   display: flex;
   height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
 
 .sidebar {
@@ -74,6 +73,7 @@ const logout = () => {
   padding: 0;
   border-right: 1px solid #e0e0e0;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', sans-serif;
 }
 
 .profile-section {
@@ -185,10 +185,10 @@ const logout = () => {
 }
 
 .header h1 {
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 400;
   color: white;
-  font-family: "Sriracha", cursive;
+  font-family: "Chewy", system-ui;
   margin-left: 20px;
 }
 
