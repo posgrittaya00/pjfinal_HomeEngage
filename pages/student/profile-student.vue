@@ -39,10 +39,12 @@
           <h1>HOME ENGAGE</h1>
         </div>
         <div class="content-area">
-            <div class="info-box">
-                <span class="info-text">{{ user.name }}</span>
-                <button class="edit-button">แก้ไข</button>
-            </div>
+          <div class="info-box">
+            <span class="info-text">{{ user.name }}</span>
+            <button class="edit-button" :class="{ 'save-button': isEditing }" @click="toggleEdit">
+              {{ isEditing ? 'บันทึก' : 'แก้ไข' }}
+            </button>
+          </div>
             <div class="button-container">
               <div class="button-group">
                 <button class="toggle-button" :class="{ active: isActive === 'info' }" @click="goToProfile">ข้อมูล</button>
@@ -54,141 +56,165 @@
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล</label>
-                        <span class="detail-span">นาย xxx xxx</span>
+                        <span class="detail-span">{{ user.name }}</span>
                     </div>
                     <div class="field">
                         <label>ชื่อเล่น</label>
-                        <span class="detail-span">xxx</span>
+                        <span class="detail-span">{{ user.nickName }}</span>
                     </div>
                     <div class="field">
                         <label>รหัสประจำตัว</label>
-                        <span class="detail-span">xxxxxxxxx-x</span>
+                        <span class="detail-span">{{ user.studentId }}</span>
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span">0903124512</span>
+                        <span class="detail-span">{{ user.studentPhone }}</span>
                     </div>
                     <div class="field">
                         <label>ระดับชั้น</label>
-                        <span class="detail-span">ม.5/1</span>
+                        <span class="detail-span">{{ user.studentClass }}</span>
                     </div>
                     <div class="field">
                         <label>เกิดวันที่</label>
-                        <span class="detail-span">10 กันยายน 2550</span>
+                        <span class="detail-span">{{ user.studentBirthDate }}</span>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field full-width">
                         <label>ที่อยู่</label>
-                        <span class="detail-span">112 หมู่ 7 ต.หนองกอมเกาะ อ.เมืองหนองคาย จ.หนองคาย 43000</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.address }}</span>
+                        <input v-if="isEditing" v-model="formData.address" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ระยะทางจากบ้านมาโรงเรียน</label>
-                        <span class="detail-span">10 กิโลเมตร</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.distance }}</span>
+                        <input v-if="isEditing" v-model="formData.distance" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เดินทางมาโรงเรียนโดย</label>
-                        <span class="detail-span">รถจักรยานยนต์</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.transport }}</span>
+                        <input v-if="isEditing" v-model="formData.transport" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ความสามารถพิเศษ</label>
-                        <span class="detail-span">เต้น</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.skills }}</span>
+                        <input v-if="isEditing" v-model="formData.skills" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล (บิดา)</label>
-                        <span class="detail-span">นาย xxx xxx</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.fatherName }}</span>
+                        <input v-if="isEditing" v-model="formData.fatherName" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>อาชีพ</label>
-                        <span class="detail-span">ค้าขาย</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.fatherJob }}</span>
+                        <input v-if="isEditing" v-model="formData.fatherJob" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span">0987654321</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.fatherPhone }}</span>
+                        <input v-if="isEditing" v-model="formData.fatherPhone" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เงินเดือน</label>
-                        <span class="detail-span">180000</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.fatherSalary }}</span>
+                        <input v-if="isEditing" v-model="formData.fatherSalary" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ระดับการศึกษา</label>
-                        <span class="detail-span">ปริญญาตรี</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.fatherEducation }}</span>
+                        <input v-if="isEditing" v-model="formData.fatherEducation" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล (มารดา)</label>
-                        <span class="detail-span">นาง xxx xxx</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.motherName }}</span>
+                        <input v-if="isEditing" v-model="formData.motherName" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>อาชีพ</label>
-                        <span class="detail-span">ค้าขาย</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.motherJob }}</span>
+                        <input v-if="isEditing" v-model="formData.motherJob" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span">0978945613</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.motherPhone }}</span>
+                        <input v-if="isEditing" v-model="formData.motherPhone" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เงินเดือน</label>
-                        <span class="detail-span">180000</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.motherSalary }}</span>
+                        <input v-if="isEditing" v-model="formData.motherSalary" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ระดับการศึกษา</label>
-                        <span class="detail-span">ปริญญาตรี</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.motherEducation }}</span>
+                        <input v-if="isEditing" v-model="formData.motherEducation" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล (ผู้ปกครอง)</label>
-                        <span class="detail-span">นาง xxx xxx</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.guardianName }}</span>
+                        <input v-if="isEditing" v-model="formData.guardianName" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เกี่ยวข้องเป็น</label>
-                        <span class="detail-span">มารดา</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.relation }}</span>
+                        <input v-if="isEditing" v-model="formData.relation" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span">0978945613</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.guardianPhone }}</span>
+                        <input v-if="isEditing" v-model="formData.guardianPhone" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field full-width">
                         <label>ที่อยู่ที่ติดต่อได้</label>
-                        <span class="detail-span">112 หมู่ 7 ต.หนองกอมเกาะ อ.เมืองหนองคาย จ.หนองคาย 43000</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.guardianAddress }}</span>
+                        <input v-if="isEditing" v-model="formData.guardianAddress" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>สถานภาพของบิดามารดา</label>
-                        <span class="detail-span">อยู่ด้วยกัน</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.pStatus }}</span>
+                        <input v-if="isEditing" v-model="formData.pStatus" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>นักเรียนพักอาศัยอยู่กับใคร</label>
-                        <span class="detail-span">บิดา-มารดา</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.liveWith }}</span>
+                        <input v-if="isEditing" v-model="formData.liveWith" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ครอบครัวนักเรียนมีสมาชิกทั้งหมดกี่คน</label>
-                        <span class="detail-span">4 คน</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.familyCount }}</span>
+                        <input v-if="isEditing" v-model="formData.familyCount" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ปัจจุบันมีพี่น้องกำลังศึกษาอยู่กี่คน</label>
-                        <span class="detail-span">1 คน</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.sibStudy }}</span>
+                        <input v-if="isEditing" v-model="formData.sibStudy" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>ประกอบอาชีพกี่คน</label>
-                        <span class="detail-span">2 คน</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.empCount }}</span>
+                        <input v-if="isEditing" v-model="formData.empCount" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ไม่ประกอบอาชีพกี่คน</label>
-                        <span class="detail-span">-</span>
+                        <span class="detail-span" v-if="!isEditing">{{ formData.unempCount }}</span>
+                        <input v-if="isEditing" v-model="formData.unempCount" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
             </div>
@@ -200,10 +226,54 @@
 <script setup>
     import { useRouter } from 'vue-router'
     import { ref } from 'vue';
-    const user = {profileImage:'/images/User.png', name: "นาย xxx xxx", studentClass: "ชั้นม.5/1", studentId: "xxxxxxxxx-x"}
+    const user = {
+      profileImage:'/images/User.png', 
+      name: "นาย xxx xxx",
+      nickName: "xxx",
+      studentId: "xxxxxxxxx-x",
+      studentPhone: "0903124512",
+      studentClass: "ชั้นม.5/1", 
+      studentBirthDate: "10 กันยายน 2550"}
+
+    const formData = ref({
+      address: "112 หมู่ 7 ต.หนองกอมเกาะ อ.เมืองหนองคาย จ.หนองคาย 43000",
+      distance: "10 กิโลเมตร ",
+      transport: "รถจักรยานยนต์",
+      skills: "เต้น",
+      fatherName: "นาย xxx xxx",
+      fatherJob: "พนักงานบริษัท",
+      fatherPhone: "0987654321",
+      fatherSalary: "18000",
+      fatherEducation: "ปริญญาตรี",
+      motherName: "นาง xxx xxx",
+      motherJob: "ข้าราชการ",
+      motherPhone: "0978945613",
+      motherSalary: "14000",
+      motherEducation: "ปริญญาตรี",
+      guardianName: "นาง xxx xxx",
+      relation: "มารดา",
+      guardianPhone: "0978945613",
+      guardianAddress: "112 หมู่ 7  ต.หนองกอมเกาะ อ.เมืองหนองคาย จ.หนองคาย 43000",
+      pStatus: "อยู่ด้วยกัน",
+      liveWith: "บิดา-มารดา",
+      familyCount: "4 คน",
+      sibStudy: "1 คน",
+      empCount: "2 คน",
+      unempCount: "-"
+    });
+    
+    const isEditing = ref(false);
+    const toggleEdit = () => {
+      if (isEditing.value) {
+        // เมื่อบันทึกให้ส่งข้อมูลไปยังฐานข้อมูล
+        console.log("Saving data:", formData.value);
+        // ฟังก์ชันนี้สามารถเชื่อมต่อกับ API เพื่อบันทึกข้อมูลในอนาคตได้
+      }
+      isEditing.value = !isEditing.value;
+    };
+
 
     const router = useRouter()
-
     const logout = () => {
     console.log("Logging out...");
     router.push('/')
@@ -408,6 +478,16 @@ const goToProfile = () => {
   .edit-button:hover {
         background-color: #ff5252; /* Hover effect color */
   }
+  /* ปุ่มบันทึก */
+  .save-button {
+    background-color: #56A7F5; /* สีพื้นฐานของปุ่มบันทึก */
+    color: white;
+  }
+
+  /* สีเมื่อ hover ปุ่มบันทึก */
+  .save-button:hover {
+    background-color: #62acf2; /* สีเมื่อ hover */
+  }
 
   .button-container {
     display: flex;
@@ -460,6 +540,7 @@ const goToProfile = () => {
   .row {
     display: flex;
     margin-bottom: 5px;
+    justify-content: space-between; /* กระจาย item ให้มีพื้นที่เท่ากัน */
   }
 
   .field {
@@ -489,6 +570,22 @@ const goToProfile = () => {
     padding: 8px; /* เพิ่ม padding */
     border-radius: 4px; /* มุมมน */
     display: block;
- }
-
+}
+.Editdetail-span {
+  width: 100%; /* ทำให้ input มีขนาดเท่ากับ container */
+  padding: 5px; /* กำหนด padding เพื่อให้ input ดูเหมาะสม */
+  background-color: #F9F9F9; /* สีพื้นหลัง */
+  color: #3c3c3c; /* สีตัวหนังสือ */
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px; /* ขนาดตัวหนังสือ */
+  padding: 8px; /* เพิ่ม padding */
+  border-radius: 4px; /* มุมมน */
+  border: 1px solid #3c3c3c; /* กำหนดเส้นขอบของ input */
+  border-radius: 4px; /* มุมมน */
+  box-sizing: border-box; /* ทำให้ padding ไม่ทำให้ขนาดของ input ใหญ่ขึ้น */
+}
+.Editdetail-span, .detail-span {
+  transition: all 0.3s ease-in-out; /* เพิ่มการเปลี่ยนแปลงที่นุ่มนวล */
+}
 </style>

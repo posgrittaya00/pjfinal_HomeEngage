@@ -41,7 +41,9 @@
         <div class="content-area">
           <div class="info-box">
                 <span class="info-text">{{ user.name }}</span>
-                <button class="edit-button">แก้ไข</button>
+                <button class="edit-button" :class="{ 'save-button': isEditing }" @click="toggleEdit">
+                  {{ isEditing ? 'บันทึก' : 'แก้ไข' }}
+                </button>
             </div>
             <div class="button-container">
               <div class="button-group">
@@ -49,80 +51,84 @@
                 <button class="toggle-button" :class="{ active: isActive === 'map' }" @click="goToMap">แผนที่บ้าน</button>
               </div>
             </div>
-              <div class="map-url-container">
-                  <!-- Input for Google Map URL -->
-                  <input
-                    v-model="mapInput"
-                    placeholder="Google map URL"
-                  />
+              <div v-if="isEditing" class="map-url-container">
+                <input v-model="mapInput" placeholder="Google map URL" />
+                <button @click="updateMapUrl">อัพเดตแผนที่</button>
+              </div>
 
-                  <!-- Button to update the map URL -->
-                  <button @click="updateMapUrl">
-                    อัพเดตแผนที่
-                  </button>
-                </div>
-
-                <!-- Iframe to display the map -->
-                <iframe
-                  v-if="mapUrl"
-                  :src="mapUrl"
-                  allowfullscreen=""
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
+              <!-- Iframe to display the map -->
+              <iframe
+                :class="{ 'full-screen': !isEditing }"
+                v-if="mapUrl"
+                :src="mapUrl"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
         </div>
       </div>
     </div>
   </template>
   
-  <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+<script setup>
+  import { ref } from 'vue';
+  import { useRouter } from 'vue-router';
+  
+  // ข้อมูลของผู้ใช้งาน
+  const user = {
+    profileImage: '/images/User.png',
+    name: "นาย xxx xxx",
+    studentClass: "ชั้นม.5/1",
+    studentId: "xxxxxxxxx-x"
+  };
+  
+  // การจัดการ router
+  const router = useRouter();
+  const isActive = ref('map'); 
+  const goToMap = () => {
+    isActive.value = 'map'; // เปลี่ยนสถานะเป็นแผนที่
+    router.push('/student/map-student'); // เปลี่ยนไปที่หน้า map-student
+  };
+  
+  const goToProfile = () => {
+    isActive.value = 'info'; // เปลี่ยนสถานะเป็นข้อมูล
+    router.push('/student/profile-student'); // เปลี่ยนไปที่หน้า profile-student
+  };
+  
+  // ฟังก์ชัน logout
+  const logout = () => {
+    console.log("Logging out...");
+    router.push('/');
+  };
+  
+  const mapInput = ref('');
+  const mapUrl = ref('');
+  const isEditing = ref(false); // ตัวแปรเพื่อตรวจสอบสถานะแก้ไข
+  
+  // ฟังก์ชันสลับโหมดแก้ไข
+  const toggleEdit = () => {
+    if (isEditing.value) {
+      // เมื่อผู้ใช้กดบันทึก อัพเดต URL แผนที่
+      updateMapUrl();
+    }
+    isEditing.value = !isEditing.value;
+  };
 
-// ข้อมูลของผู้ใช้งาน
-const user = {
-  profileImage: '/images/User.png',
-  name: "นาย xxx xxx",
-  studentClass: "ชั้นม.5/1",
-  studentId: "xxxxxxxxx-x"
-};
-
-// การจัดการ router
-const router = useRouter();
-
-const isActive = ref('map'); 
-
-const goToMap = () => {
-  isActive.value = 'map'; // เปลี่ยนสถานะเป็นแผนที่
-  router.push('/student/map-student'); // เปลี่ยนไปที่หน้า map-student
-};
-
-const goToProfile = () => {
-  isActive.value = 'info'; // เปลี่ยนสถานะเป็นข้อมูล
-  router.push('/student/profile-student'); // เปลี่ยนไปที่หน้า profile-student
-};
-
-
-// ฟังก์ชัน logout
-const logout = () => {
-  console.log("Logging out...");
-  router.push('/');
-};
-
-const mapInput = ref('');
-const mapUrl = ref('');
-
-const updateMapUrl = () => {
+  const updateMapUrl = () => {
   const url = mapInput.value.trim();
   let lat, lng;
 
-  // รูปแบบที่ใช้ดึงพิกัด
+  // Patterns for extracting coordinates
   const patterns = [
     /@(-?\d+\.\d+),(-?\d+\.\d+)/,   // @latitude,longitude
     /!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/,  // !3dlatitude!4dlongitude
     /q=(-?\d+\.\d+),(-?\d+\.\d+)/,    // q=latitude,longitude
-    /maps.google.com\/maps\?q=(-?\d+\.\d+),(-?\d+\.\d+)/ // maps.google.com/?q=latitude,longitude
-  ];
+    /maps.google.com\/maps\?q=(-?\d+\.\d+),(-?\d+\.\d+)/, // maps.google.com/?q=latitude,longitude
+    /\/place\/.*?@(-?\d+\.\d+),(-?\d+\.\d+)/, // /place/ with @latitude,longitude
+    /search\/(-?\d+\.\d+),(-?\d+\.\d+)/, // search/latitude,longitude
+    /search\/([0-9.-]+),([0-9.-]+)/    // Additional pattern for extracting latitude and longitude
+];
+
 
   for (let pattern of patterns) {
     const match = url.match(pattern);
@@ -133,23 +139,31 @@ const updateMapUrl = () => {
     }
   }
 
-  // การจัดการกรณีลิงก์ย่อ
+  // Handling shortened links
   if (!lat && url.includes('maps.app.goo.gl')) {
-    alert('กรุณาคัดลอกพิกัดจากลิงก์ย่อที่เปิดในเบราว์เซอร์');
+    // Show alert before redirecting
+    const proceed = confirm('ลิงก์ที่คุณป้อนไม่มีพิกัดโดยตรง กด OK เพื่อเปิดลิงก์ในแท็บใหม่ แล้วคัดลอก URL เต็มจากแถบที่อยู่ของเบราว์เซอร์ (URL ที่มีพิกัดจะอยู่ในแถบที่อยู่ของเบราว์เซอร์)');
+    
+    if (proceed) {
+      window.open(url, '_blank'); // Open the shortened link in a new tab
+    }
     return;
   }
 
   if (lat && lng) {
-    // สร้าง URL สำหรับแสดงแผนที่
-    mapUrl.value = `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
+    mapUrl.value = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
   } else {
-    alert('ไม่สามารถดึงพิกัดจาก URL ที่กรอกได้');
+    alert('ไม่สามารถดึงพิกัดจาก URL ได้');
   }
 };
-</script>
 
-  <style scoped>
-.container {
+
+</script>
+  
+  
+
+<style scoped>
+  .container {
     display: flex;
     height: 111vh;
     font-family: 'Inter', sans-serif;
@@ -329,6 +343,17 @@ const updateMapUrl = () => {
         background-color: #ff5252; /* Hover effect color */
   }
 
+  /* ปุ่มบันทึก */
+  .save-button {
+    background-color: #56A7F5; /* สีพื้นฐานของปุ่มบันทึก */
+    color: white;
+  }
+
+  /* สีเมื่อ hover ปุ่มบันทึก */
+  .save-button:hover {
+    background-color: #62acf2; /* สีเมื่อ hover */
+  }
+
   .button-container {
     display: flex;
     justify-content: center; /* จัดตรงกลางในแนวนอน */
@@ -357,75 +382,78 @@ const updateMapUrl = () => {
   color: #56A7F5;
   background-color: #ECECEC;
   text-align: center; /* จัดข้อความให้อยู่กลางแนวนอน */
-}
-
-.toggle-button.active {
-  background-color: #56A7F5;
-  color: white;
-}
-
-.toggle-button:hover {
-  opacity: 0.9;
-}
-
-  .toggle-button:not(.active) {
-    background-color: #ECECEC; /* สีเทาเมื่อไม่ได้เลือก */
-    color: #56A7F5; /* ตัวหนังสือสีฟ้า */
   }
 
-  /* Container for input and button, centered at the top */
-.map-url-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px auto; /* Center the container horizontally */
-  max-width: 600px; /* Optional: Limit the width */
-}
+  .toggle-button.active {
+    background-color: #56A7F5;
+    color: white;
+  }
 
-/* Style for the Google Map URL input */
-.map-url-container input {
-  flex: 1;
-  max-width: 600px; /* Limit the max-width */
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .toggle-button:hover {
+    opacity: 0.9;
+  }
 
-/* Style for the Update button */
-.map-url-container button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #66b2f9;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  transition: background-color 0.3s;
-}
+    .toggle-button:not(.active) {
+      background-color: #ECECEC; /* สีเทาเมื่อไม่ได้เลือก */
+      color: #56A7F5; /* ตัวหนังสือสีฟ้า */
+    }
 
-.map-url-container button:hover {
-  background-color: #4aa5fa;
-}
+    /* Container for input and button, centered at the top */
+  .map-url-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px auto; /* Center the container horizontally */
+    max-width: 600px; /* Optional: Limit the width */
+  }
 
-.map-url-container button:active {
-  background-color: #4aa5fa;
+  /* Style for the Google Map URL input */
+  .map-url-container input {
+    flex: 1;
+    max-width: 600px; /* Limit the max-width */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Style for the Update button */
+  .map-url-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #66b2f9;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+  }
+
+  .map-url-container button:hover {
+    background-color: #62acf2;
+  }
+
+  .map-url-container button:active {
+    background-color: #62acf2;
+  }
+  /* Style for the iframe map display */
+  iframe {
+    width: 100%;
+    max-width: 1050px;
+    height: 465px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+iframe.full-screen {
+  height: 525px; /* ปรับความสูงให้เต็มที่เมื่อไม่ได้แก้ไข */
 }
-/* Style for the iframe map display */
-iframe {
-  width: 100%;
-  max-width: 1050px;
-  height: 450px;
-  border: none;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-  </style>
+</style>
