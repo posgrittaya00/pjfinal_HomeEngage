@@ -4,7 +4,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   </Head>
   <div class="container">
-    <Sidebar />
+    <SidebarTeacher />
+    
     <div class="main-content">
       <div class="header">
         <h1>HOME ENGAGE</h1>
@@ -17,21 +18,31 @@
 </template>
 
 <script setup>
-import Sidebar from '/pages/components/Sidebar.vue'
+import SidebarTeacher from '/pages/components/SidebarTeacher.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const logout = () => {
+  console.log("Logging out...");
+  router.push('/Login-Teacher')
+}
 </script>
 
 <style scoped>
 .container {
   display: flex;
-  height: 100vh;
+  height: 111vh;
   font-family: 'Inter', sans-serif;
 }
+
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   background-color: #f5f5f5;
 }
+
 .header {
   background-color: #56A7F5;
   padding: 5px 20px;
@@ -40,6 +51,7 @@ import Sidebar from '/pages/components/Sidebar.vue'
   justify-content: flex-start;
   height: 80px;
 }
+
 .header h1 {
   font-size: 42px;
   font-weight: 400;
@@ -47,10 +59,12 @@ import Sidebar from '/pages/components/Sidebar.vue'
   font-family: "Chewy", system-ui;
   margin-left: 20px;
 }
+
 .content-area {
   flex: 1;
-  background-color: #EAE5E5;
+  background-color: #F9F9F9;
   margin: 20px;
   border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-</style>
+</style>  

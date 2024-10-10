@@ -51,7 +51,7 @@ export default {
     setUserType(type) {
       this.userType = type;
       if (type === 'teacher') {
-        this.$router.push('/login-teacher');
+        this.$router.push('/Login-Teacher');
       }
     },
     login() {
@@ -62,7 +62,7 @@ export default {
 
       if (this.userType === 'student') {
       // เปลี่ยนเส้นทางไปที่หน้า home-student เมื่อเป็นนักเรียน
-      this.$router.push('/student/home-student');
+      this.$router.push('/student/Home-Student');
     }
     }
   }

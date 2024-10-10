@@ -4,18 +4,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   </Head>
   <div class="container">
-    <Sidebar />
-    
+    <SidebarTeacher />
+
     <div class="main-content">
       <div class="header">
         <h1>HOME ENGAGE</h1>
       </div>
       <div class="content-area">
         <div class="info-box">
-          <span class="info-text">{{ user.Name }}</span>
-          <button class="edit-button" :class="{ 'save-button': isEditing }" @click="toggleEdit">
-            {{ isEditing ? 'บันทึก' : 'แก้ไข' }}
-          </button>
+          <span class="info-text">ข้อมูลนักเรียน</span>
+          <router-link to="/teacher/ProfileStudent">
+            <button class="back" @click="toggleEdit">ย้อนกลับ</button>
+          </router-link>
         </div>
         <div class="button-container">
           <div class="button-group">
@@ -23,36 +23,29 @@
             <button class="toggle-button" :class="{ active: isActive === 'map' }" @click="goToMap">แผนที่บ้าน</button>
           </div>
         </div>
-        <StudentDetails :isEditing="isEditing" :onToggleEdit="toggleEdit" />
+        <StudentDetails :isEditing="isEditing" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import StudentDetails from '/pages/components/StudentDetails.vue';
-import Sidebar from '/pages/components/Sidebar.vue';
 import { useRouter } from 'vue-router';
-
-const user = { Name: "นาย xxx xxx" };
-const isEditing = ref(JSON.parse(localStorage.getItem('isEditing')) || false); // รับค่าจาก localStorage หรือ default เป็น false
-
-const toggleEdit = () => {
-  isEditing.value = !isEditing.value;
-  localStorage.setItem('isEditing', JSON.stringify(isEditing.value)); // เก็บค่าใน localStorage
-};
+import { ref } from 'vue';
 
 const router = useRouter();
 const isActive = ref('info');
 
 const goToMap = () => {
   isActive.value = 'map';
-  router.push('/student/Map-Student');
+  router.push('/teacher/Mapstudents').catch(() => {}); // เพิ่มการจับข้อผิดพลาด
 };
 
 const goToProfile = () => {
   isActive.value = 'info';
-  router.push('/student/Profile-Student');
+  router.push('/teacher/Info-students').catch(() => {}); // เพิ่มการจับข้อผิดพลาด
 };
 </script>
   
@@ -113,30 +106,20 @@ const goToProfile = () => {
         color: #333;
   }
 
-  .edit-button {
-        background-color: #ff6b6b; /* Matches the edit button color */
+  .back {
+        background-color: #56A7F5; /* Matches the edit button color */
         color: white;
         border: none;
+        font-size: 14px;
         padding: 8px 16px;
         border-radius: 10px;
         cursor: pointer;
         transition: background-color 0.3s ease;
   }
 
-  .edit-button:hover {
-        background-color: #ff5252; /* Hover effect color */
+  .back:hover {
+        background-color: #72b6f6; /* Hover effect color */
   }
-  /* ปุ่มบันทึก */
-  .save-button {
-    background-color: #55c058; /* สีพื้นฐานของปุ่มบันทึก */
-    color: white;
-  }
-
-  /* สีเมื่อ hover ปุ่มบันทึก */
-  .save-button:hover {
-    background-color: #69b76b; /* สีเมื่อ hover */
-  }
-
   .button-container {
     display: flex;
     justify-content: center; /* จัดตรงกลางในแนวนอน */
@@ -180,4 +163,4 @@ const goToProfile = () => {
   background-color: #ECECEC; /* สีเทาเมื่อไม่ได้เลือก */
   color: #56A7F5; /* ตัวหนังสือสีฟ้า */
 }
-</style>
+</style>  

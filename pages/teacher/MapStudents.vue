@@ -4,7 +4,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   </Head>
   <div class="container">
-    <Sidebar />
+    <SidebarTeacher />
 
     <div class="main-content">
       <div class="header">
@@ -12,10 +12,10 @@
       </div>
       <div class="content-area">
         <div class="info-box">
-          <span class="info-text">{{ user.name }}</span>
-          <button class="edit-button" :class="{ 'save-button': isEditing }" @click="toggleEdit">
-            {{ isEditing ? 'บันทึก' : 'แก้ไข' }}
-          </button>
+          <span class="info-text">ข้อมูลนักเรียน</span>
+          <router-link to="/teacher/ProfileStudent">
+            <button class="back" @click="toggleEdit">ย้อนกลับ</button>
+          </router-link>
         </div>
         <div class="button-container">
           <div class="button-group">
@@ -23,15 +23,11 @@
             <button class="toggle-button" :class="{ active: isActive === 'map' }" @click="goToMap">แผนที่บ้าน</button>
           </div>
         </div>
-        <div v-if="isEditing" class="map-url-container">
-          <input v-model="mapInput" placeholder="Google map URL" />
-          <button @click="updateMapUrl">อัพเดตแผนที่</button>
-        </div>
 
         <!-- Iframe สำหรับแสดงแผนที่ -->
         <iframe
-          v-if="user.mapUrl"
-          :src="user.mapUrl"
+          v-if="mapUrl"
+          :src="mapUrl"
           allowfullscreen=""
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
@@ -43,103 +39,50 @@
 </template>
 
 <script setup>
-import Sidebar from '/pages/components/Sidebar.vue';
+import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-// ข้อมูลของผู้ใช้งาน รวมถึง URL แผนที่
-const user = {
-  mapUrl: 'https://www.google.com/maps/place/Demonstration+School+of+Khon+Kaen+University+Nong+Khai+Campus/@17.8064835,102.7459776,16z/data=!4m14!1m7!3m6!1s0x31239d708023aa15:0x50c037631d1d7650!2sFountain+Roundabout!8m2!3d17.4043878!4d102.7939425!16s%2Fg%2F11cncb3frf!3m5!1s0x31247d2f92e78029:0x432ba858802e1735!8m2!3d17.8105875!4d102.7439352!16s%2Fg%2F11h0333y21?entry=ttu&g_ep=EgoyMDI0MTAwNS4yIKXMDSoASAFQAw%3D%3D' // URL ของ iframe
+// สร้างตัวแปรเพื่อเก็บ URL แผนที่
+const mapUrl = ref('');
+
+// ฟังก์ชันในการตั้งค่า mapUrl จาก localStorage
+const setMapUrl = (url) => {
+  localStorage.setItem('mapUrl', url);
+  mapUrl.value = url;
 };
+
+// ฟังก์ชันในการดึง mapUrl จาก localStorage
+const getMapUrl = () => {
+  const storedUrl = localStorage.getItem('mapUrl');
+  if (storedUrl) {
+    mapUrl.value = storedUrl;
+  } else {
+    // หากไม่มี URL ให้กำหนดเป็นค่าเริ่มต้น
+    const defaultUrl = 'https://www.google.com/maps/place/Demonstration+School+of+Khon+Kaen+University+Nong+Khai+Campus/@17.8064835,102.7459776,16z/data=!4m14!1m7!3m6!1s0x31239d708023aa15:0x50c037631d1d7650!2sFountain+Roundabout!8m2!3d17.4043878!4d102.7939425!16s%2Fg%2F11cncb3frf!3m5!1s0x31247d2f92e78029:0x432ba858802e1735!8m2!3d17.8105875!4d102.7439352!16s%2Fg%2F11h0333y21?entry=ttu&g_ep=EgoyMDI0MTAwNS4yIKXMDSoASAFQAw%3D%3D';
+    setMapUrl(defaultUrl);
+  }
+};
+
+// เรียกใช้ฟังก์ชัน getMapUrl เมื่อคอมโพเนนต์โหลด
+onMounted(() => {
+  getMapUrl();
+});
 
 // การจัดการ router
 const router = useRouter();
-const isActive = ref('map'); 
+const isActive = ref('map');
 const goToMap = () => {
-  isActive.value = 'map'; 
-  router.push('/student/Map-student'); 
+  isActive.value = 'map';
+  router.push('/teacher/MapStudents');
 };
 
 const goToProfile = () => {
-  isActive.value = 'info'; 
-  router.push('/student/Profile-student'); 
+  isActive.value = 'info';
+  router.push('/teacher/Info-Students');
 };
-
-const isEditing = ref(JSON.parse(localStorage.getItem('isEditing')) || false); 
-
-const toggleEdit = () => {
-  isEditing.value = !isEditing.value;
-  localStorage.setItem('isEditing', JSON.stringify(isEditing.value)); 
-};
-
-const mapInput = ref('');
-
-// ฟังก์ชันสำหรับดึง URL แผนที่จากฐานข้อมูล
-const fetchMapUrl = async () => {
-  const storedUrl = localStorage.getItem('mapUrl'); 
-  if (storedUrl) {
-    user.mapUrl = storedUrl; 
-  }
-};
-
-const updateMapUrl = () => {
-  const url = mapInput.value.trim();
-  let lat, lng;
-
-  // รูปแบบสำหรับการดึงพิกัด
-  const patterns = [
-    /@(-?\d+\.\d+),(-?\d+\.\d+)/,
-    /place\/.*?@(-?\d+\.\d+)/,
-    /search\/(-?\d+\.\d+),(-?\d+\.\d+)/,
-    /maps\/@(-?\d+\.\d+),(-?\d+\.\d+)/,
-    /maps\/\?q=(-?\d+\.\d+),(-?\d+\.\d+)/,
-    /(-?\d{1,3})°(\d{1,2})'(\d{1,2}\.\d+)"([NS])\s+(-?\d{1,3})°(\d{1,2})'(\d{1,2}\.\d+)"([EW])/
-  ];
-
-  for (let pattern of patterns) {
-    const match = url.match(pattern);
-    if (match) {
-      if (pattern.source.includes('DMS')) {
-        lat = convertDMSToDecimal(match[1], match[2], match[3], match[4]);
-        lng = convertDMSToDecimal(match[5], match[6], match[7], match[8]);
-      } else {
-        lat = match[1];
-        lng = match[2];
-      }
-      break;
-    }
-  }
-
-  if (!lat && url.includes('maps.app.goo.gl')) {
-    const proceed = confirm('ลิงก์ที่คุณป้อนไม่มีพิกัดโดยตรง กด OK เพื่อเปิดลิงก์ในแท็บใหม่ แล้วคัดลอก URL เต็มจากแถบที่อยู่ของเบราว์เซอร์');
-    if (proceed) {
-      window.open(url, '_blank');
-    }
-    return;
-  }
-
-  if (lat && lng) {
-    // สร้าง URL ที่ถูกต้องสำหรับ iframe
-    user.mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
-    localStorage.setItem('mapUrl', user.mapUrl); 
-    mapInput.value = ''; 
-  } else {
-    alert('ไม่สามารถดึงพิกัดจาก URL ได้');
-  }
-};
-
-// ฟังก์ชันแปลง DMS เป็น Decimal Degrees
-const convertDMSToDecimal = (degrees, minutes, seconds, direction) => {
-  let decimal = parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / 3600;
-  if (direction === 'S' || direction === 'W') {
-    decimal *= -1;
-  }
-  return decimal;
-};
-
-// ดึง URL แผนที่เมื่อ component ถูกสร้าง
-onMounted(fetchMapUrl);
 </script>
+
 
 <style scoped>
   .container {
@@ -198,29 +141,19 @@ onMounted(fetchMapUrl);
         color: #333;
   }
 
-  .edit-button {
-        background-color: #ff6b6b; /* Matches the edit button color */
+  .back {
+        background-color: #56A7F5; /* Matches the edit button color */
         color: white;
         border: none;
+        font-size: 14px;
         padding: 8px 16px;
         border-radius: 10px;
         cursor: pointer;
         transition: background-color 0.3s ease;
   }
 
-  .edit-button:hover {
-        background-color: #ff5252; /* Hover effect color */
-  }
-
-  /* ปุ่มบันทึก */
-  .save-button {
-    background-color: #55c058; /* สีพื้นฐานของปุ่มบันทึก */
-    color: white;
-  }
-
-  /* สีเมื่อ hover ปุ่มบันทึก */
-  .save-button:hover {
-    background-color: #69b76b; /* สีเมื่อ hover */
+  .back:hover {
+        background-color: #72b6f6; /* Hover effect color */
   }
 
   .button-container {
@@ -322,12 +255,7 @@ onMounted(fetchMapUrl);
     margin-left: auto;
     margin-right: auto;
   }
-iframe.full-screen {
-  height: 525px; /* ปรับความสูงให้เต็มที่เมื่อไม่ได้แก้ไข */
-}
-
-.map-image {
-width: 100%; /* ปรับขนาดตามที่ต้องการ */
-height: auto;
-}
+    iframe.full-screen {
+    height: 525px; /* ปรับความสูงให้เต็มที่เมื่อไม่ได้แก้ไข */
+    }
 </style>
