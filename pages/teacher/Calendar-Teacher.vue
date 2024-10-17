@@ -11,7 +11,6 @@
         <h1>HOME ENGAGE</h1>
       </div>
       <div class="content-area">
-        <!-- ใส่เนื้อหาที่คุณต้องการที่นี่ -->
       </div>
     </div>
   </div>
