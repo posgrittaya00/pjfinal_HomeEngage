@@ -1,6 +1,7 @@
 <template>
+
   <Head>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   </Head>
   <div class="wrapper">
     <!-- ส่วนปฏิทิน -->
@@ -8,22 +9,26 @@
       <div class="datepicker-container">
         <div class="calendar-header">
           <button @click="prevMonth">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="feather feather-chevron-left">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
           </button>
           <span>{{ monthNames[month] }} {{ year }}</span>
           <button @click="nextMonth">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="feather feather-chevron-right">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
           </button>
         </div>
         <div class="calendar-body">
           <div class="calendar-day" v-for="day in weekDays" :key="day">{{ day }}</div>
-          <div
-            class="calendar-date"
-            v-for="date in dates"
-            :key="date.date"
+          <div class="calendar-date" v-for="date in dates" :key="date.date"
             :class="[isWeekend(date) ? 'weekend' : '', date.bookingCount === 3 ? 'fully-booked' : (date.bookingCount === 2 ? 'almost-full' : 'available'), { selected: isSelected(date), disabled: !date.available }]"
-            @click="selectDate(date)"
-          >
+            @click="selectDate(date)">
             {{ date.date }}
             <small v-if="date.bookingCount > 0">({{ date.bookingCount }} คิว)</small>
           </div>
@@ -60,12 +65,23 @@ import { ref, computed } from 'vue';
 const Name = ref('');
 const stuId = ref('');
 
-function bookDate() {
+async function bookDate() {
   if (!Name.value || !stuId.value) {
     alert("กรุณากรอกข้อมูลให้ครบถ้วน");
   } else {
     alert(`จองวันที่สำหรับ ${Name.value} รหัสประจำตัว: ${stuId.value}`);
-  }
+  //   let body = {
+  //     Name: Name.value,
+  //     stuId: stuId.value,
+  //     date: dates
+  //   }
+  //   console.log(body);
+
+  //   await fetch("/", {
+  //     method: "POST",
+  //     body
+  //   },)
+  // }
 }
 
 const weekDays = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
@@ -86,7 +102,7 @@ const dates = computed(() => {
   const startOfMonth = new Date(year.value, month.value, 1);
   const endOfMonth = new Date(year.value, month.value + 1, 0);
   const dates = [];
-  
+
   for (let i = 0; i < startOfMonth.getDay(); i++) {
     dates.push({ date: '', available: false, bookingCount: 0 });
   }
@@ -168,7 +184,8 @@ function isWeekend(date) {
 /* กำหนดให้ทุกอย่างใช้ฟอนต์ Inter */
 * {
   font-family: 'Inter', sans-serif;
-  box-sizing: border-box; /* เพื่อให้การจัดการขนาดขององค์ประกอบถูกต้อง */
+  box-sizing: border-box;
+  /* เพื่อให้การจัดการขนาดขององค์ประกอบถูกต้อง */
 }
 
 /* ตั้งค่าสำหรับ input type="date" */
@@ -197,7 +214,8 @@ input[type="date"] {
   border-radius: 12px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 433.6px; /* ปรับขนาดเพิ่มขึ้น 3% จาก 420px */
+  width: 433.6px;
+  /* ปรับขนาดเพิ่มขึ้น 3% จาก 420px */
 }
 
 .calendar-header {
@@ -315,8 +333,10 @@ input[type="date"] {
   border-radius: 6px;
   border: 1px solid #ccc;
   background-color: #f9f9f9;
-  width: 120px; /* ปรับความกว้างเป็น 120px */
-  text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+  width: 120px;
+  /* ปรับความกว้างเป็น 120px */
+  text-align: center;
+  /* จัดข้อความให้อยู่ตรงกลาง */
 }
 
 .time-picker select {
@@ -341,26 +361,31 @@ input[type="date"] {
   margin-top: 20px;
   width: 100%;
   max-width: 400px;
-  gap: 10px; /* เพิ่มระยะห่างระหว่างช่องกรอกข้อมูล */
+  gap: 10px;
+  /* เพิ่มระยะห่างระหว่างช่องกรอกข้อมูล */
   color: #5B5B5B;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  width: 100%; /* ให้ฟอร์มเต็มพื้นที่ */
+  width: 100%;
+  /* ให้ฟอร์มเต็มพื้นที่ */
 }
 
 .form-group label {
-  font-weight: normal; /* ทำให้ข้อความใน label ไม่เป็นตัวหนา */
+  font-weight: normal;
+  /* ทำให้ข้อความใน label ไม่เป็นตัวหนา */
   margin-bottom: 5px;
-  color: #5B5B5B; /* ปรับสีของข้อความ */
+  color: #5B5B5B;
+  /* ปรับสีของข้อความ */
 }
 
 .form-group input {
   padding: 10px;
   font-size: 14px;
-  font-weight: normal; /* ทำให้ข้อความใน input ไม่เป็นตัวหนา */
+  font-weight: normal;
+  /* ทำให้ข้อความใน input ไม่เป็นตัวหนา */
   border-radius: 6px;
   border: 1px solid #ccc;
   width: 100%;
@@ -381,7 +406,8 @@ input[type="date"] {
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  width: 100px; /* ให้ปุ่มมีขนาดความกว้างคงที่ */
+  width: 100px;
+  /* ให้ปุ่มมีขนาดความกว้างคงที่ */
 }
 
 .book-button:hover {
