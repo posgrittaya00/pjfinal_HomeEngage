@@ -69,116 +69,104 @@ async function bookDate() {
   if (!Name.value || !stuId.value) {
     alert("กรุณากรอกข้อมูลให้ครบถ้วน");
   } else {
-    alert(`จองวันที่สำหรับ ${Name.value} รหัสประจำตัว: ${stuId.value}`);
-    // let body = {
-    //   Name: Name.value,
-    //   stuId: stuId.value,
-    //   date: dates
-    // }
-    // console.log(body);
+    alert(`จองวันที่สำหรับ ${Name.value} รหัสประจำตัว: ${stuId.value} Date: ${formattedDate.value}`);
+  }
+}
 
-    // await fetch("/", {
-    //   method: "POST",
-    //   body
-    // },)
+const weekDays = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
-    }
+const today = new Date();
+
+const selectedDate = ref(null);
+const year = ref(today.getFullYear());
+const month = ref(today.getMonth());
+
+const userHasBooked = ref(false);
+const previouslySelectedDate = ref(null);
+
+const formattedDate = ref(''); // ตั้งค่าเป็น ref
+
+const dates = computed(() => {
+  const startOfMonth = new Date(year.value, month.value, 1);
+  const endOfMonth = new Date(year.value, month.value + 1, 0);
+  const dates = [];
+
+  for (let i = 0; i < startOfMonth.getDay(); i++) {
+    dates.push({ date: '', available: false, bookingCount: 0 });
   }
 
-  const weekDays = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
-  const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+  for (let i = 1; i <= endOfMonth.getDate(); i++) {
+    const currentDate = new Date(year.value, month.value, i);
+    const dayOfWeek = currentDate.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
-  const today = new Date();
-
-  const selectedDate = ref(null);
-  const year = ref(today.getFullYear());
-  const month = ref(today.getMonth());
-
-  const userHasBooked = ref(false);
-  const previouslySelectedDate = ref(null);
-
-  const formattedDate = ref(''); // ตั้งค่าเป็น ref
-
-  const dates = computed(() => {
-    const startOfMonth = new Date(year.value, month.value, 1);
-    const endOfMonth = new Date(year.value, month.value + 1, 0);
-    const dates = [];
-
-    for (let i = 0; i < startOfMonth.getDay(); i++) {
-      dates.push({ date: '', available: false, bookingCount: 0 });
-    }
-
-    for (let i = 1; i <= endOfMonth.getDate(); i++) {
-      const currentDate = new Date(year.value, month.value, i);
-      const dayOfWeek = currentDate.getDay();
-      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-
-      dates.push({
-        date: i,
-        available: currentDate >= today && !isWeekend,
-        bookingCount: 0,
-      });
-    }
-
-    return dates;
-  });
-
-  function selectDate(date) {
-    if (userHasBooked.value) {
-      cancelPreviousBooking();
-    }
-
-    if (date.available && date.bookingCount < 3) {
-      selectedDate.value = {
-        date: date.date,
-        month: month.value,
-        year: year.value
-      };
-
-      // อัปเดต formattedDate ให้ตรงกับ selectedDate
-      formattedDate.value = new Date(year.value, month.value, date.date + 1).toISOString().split('T')[0]; // เพิ่ม 1 เพื่อให้ตรงกับวันที่ที่ถูกเลือก
-
-      date.bookingCount++;
-      userHasBooked.value = true;
-      previouslySelectedDate.value = date;
-    } else {
-      alert("ไม่สามารถจองคิวได้ คิวเต็มแล้ว");
-    }
+    dates.push({
+      date: i,
+      available: currentDate >= today && !isWeekend,
+      bookingCount: 0,
+    });
   }
 
-  function cancelPreviousBooking() {
-    if (previouslySelectedDate.value) {
-      previouslySelectedDate.value.bookingCount--;
-      previouslySelectedDate.value = null;
-    }
+  return dates;
+});
+
+function selectDate(date) {
+  if (userHasBooked.value) {
+    cancelPreviousBooking();
   }
 
-  function prevMonth() {
-    if (month.value === 0) {
-      month.value = 11;
-      year.value--;
-    } else {
-      month.value--;
-    }
-  }
+  if (date.available && date.bookingCount < 3) {
+    selectedDate.value = {
+      date: date.date,
+      month: month.value,
+      year: year.value
+    };
 
-  function nextMonth() {
-    if (month.value === 11) {
-      month.value = 0;
-      year.value++;
-    } else {
-      month.value++;
-    }
-  }
+    // อัปเดต formattedDate ให้ตรงกับ selectedDate
+    formattedDate.value = new Date(year.value, month.value, date.date + 1).toISOString().split('T')[0]; // เพิ่ม 1 เพื่อให้ตรงกับวันที่ที่ถูกเลือก
 
-  function isSelected(date) {
-    return selectedDate.value && selectedDate.value.date === date.date && date.available;
+    date.bookingCount++;
+    userHasBooked.value = true;
+    previouslySelectedDate.value = date;
+  } else {
+    alert("ไม่สามารถจองคิวได้ คิวเต็มแล้ว");
   }
+}
 
-  function isWeekend(date) {
-    const currentDate = new Date(year.value, month.value, date.date);
-    return currentDate.getDay() === 0 || currentDate.getDay() === 6;
+function cancelPreviousBooking() {
+  if (previouslySelectedDate.value) {
+    previouslySelectedDate.value.bookingCount--;
+    previouslySelectedDate.value = null;
   }
+}
+
+function prevMonth() {
+  if (month.value === 0) {
+    month.value = 11;
+    year.value--;
+  } else {
+    month.value--;
+  }
+}
+
+function nextMonth() {
+  if (month.value === 11) {
+    month.value = 0;
+    year.value++;
+  } else {
+    month.value++;
+  }
+}
+
+function isSelected(date) {
+  return selectedDate.value && selectedDate.value.date === date.date && date.available;
+}
+
+function isWeekend(date) {
+  const currentDate = new Date(year.value, month.value, date.date);
+  return currentDate.getDay() === 0 || currentDate.getDay() === 6;
+}
 </script>
 
 <style scoped>
