@@ -70,6 +70,7 @@ async function bookDate() {
     alert("กรุณากรอกข้อมูลให้ครบถ้วน");
   } else {
     alert(`จองวันที่สำหรับ ${Name.value} รหัสประจำตัว: ${stuId.value} Date: ${formattedDate.value}`);
+    // EIEI
   }
 }
 
