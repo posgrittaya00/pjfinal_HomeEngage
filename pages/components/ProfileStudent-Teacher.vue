@@ -15,9 +15,9 @@
       <tbody>
         <tr v-for="(student, index) in students" :key="index">
           <td>{{ (index + 1) + ((currentPage - 1) * studentsPerPage) }}</td>
-          <td>{{ student.stuId }}</td>
+          <td>{{ student.StuId }}</td>
           <td>{{ student.Name }}</td>
-          <td>{{ student.stuClass }}</td>
+          <td>{{ student.StuClass }}</td>
           <td>
             <button class="status-button" :class="{ visited: student.firstVisit === 'visited', 'not-visited': student.firstVisit !== 'visited' }">
               <svg v-if="student.firstVisit === 'visited'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">

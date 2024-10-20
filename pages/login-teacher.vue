@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -48,24 +50,39 @@ export default {
     };
   },
   methods: {
-  setUserType(type) {
-    this.userType = type;
-    if (type === 'student') {
-      this.$router.push('/');
-    }
-  },
-  login() {
-    console.log('User Type:', this.userType);
-    console.log('Username:', this.username);
-    console.log('Password:', this.password);
-    // เพิ่ม logic สำหรับการส่งข้อมูลไปยัง backend
+    setUserType(type) {
+      this.userType = type;
+      if (type === 'student') {
+        this.$router.push('/');
+      }
+    },
+  async login() {
+  try {
+    // ส่งข้อมูลการเข้าสู่ระบบไปที่ backend
+    const response = await axios.post('http://localhost:8000/api/teacher/login', {
+      username: this.username,
+      password: this.password,
+      userType: this.userType
+    });
 
-    if (this.userType === 'teacher') {
-      // เปลี่ยนเส้นทางไปที่หน้า home-student เมื่อเป็นนักเรียน
-      this.$router.push('/teacher/Home-Teacher');
+    // ตรวจสอบสถานะและข้อมูลที่ได้รับจาก backend
+    if (response.data.message === 'Login successful') {
+      // เก็บ username ไว้ใน localStorage
+      localStorage.setItem('username', this.username);
+      // เปลี่ยนเส้นทางตามประเภทผู้ใช้
+      if (this.userType === 'teacher') {
+        this.$router.push('/teacher/Home-Teacher');
+      } else {
+        this.$router.push('/student/Home-Student');
+      }
+    } else {
+      alert('เข้าสู่ระบบไม่สำเร็จ: ' + response.data.message);
     }
+  } catch (error) {
+    alert('มีข้อผิดพลาดในการเข้าสู่ระบบ: ' + error.response.data.message);
   }
-}
+  }
+  }
 };
 </script>
 
