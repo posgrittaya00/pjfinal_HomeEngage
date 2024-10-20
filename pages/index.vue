@@ -23,13 +23,13 @@
         <input 
           type="text" 
           v-model="username" 
-          placeholder="รหัสประจำตัวนักเรียน / นักศึกษา" 
+          :placeholder="userType === 'student' ? 'รหัสประจำตัวนักเรียน / นักศึกษา' : 'รหัสประจำตัวคุณครู / อาจารย์'" 
           class="login-input"
         />
         <input 
           type="password" 
           v-model="password" 
-          placeholder="รหัสประจำตัวนักเรียน / นักศึกษา" 
+          :placeholder="userType === 'student' ? 'รหัสประจำตัวนักเรียน / นักศึกษา' : 'รหัสประจำตัวคุณครู / อาจารย์'" 
           class="login-input"
         />
         <button type="submit" class="login-button">เข้าสู่ระบบ</button>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -54,16 +56,31 @@ export default {
         this.$router.push('/Login-Teacher');
       }
     },
-    login() {
-      console.log('User Type:', this.userType);
-      console.log('Username:', this.username);
-      console.log('Password:', this.password);
-      // เพิ่ม logic สำหรับการส่งข้อมูลไปยัง backend
+    
+    async login() {
+      try {
+        // ส่งข้อมูลการเข้าสู่ระบบไปที่ backend
+        const response = await axios.post(`http://localhost:8000/api/${this.userType}/login`, {
+          username: this.username,
+          password: this.password,
+        });
 
-      if (this.userType === 'student') {
-      // เปลี่ยนเส้นทางไปที่หน้า home-student เมื่อเป็นนักเรียน
-      this.$router.push('/student/Home-Student');
-    }
+        // ตรวจสอบสถานะและข้อมูลที่ได้รับจาก backend
+        if (response.data.message === 'Login successful') {
+          // เก็บ username ไว้ใน localStorage
+          localStorage.setItem('username', this.username);
+          // เปลี่ยนเส้นทางตามประเภทผู้ใช้
+          if (this.userType === 'teacher') {
+            this.$router.push('/teacher/Home-Teacher');
+          } else {
+            this.$router.push('/student/Home-Student');
+          }
+        } else {
+          alert('เข้าสู่ระบบไม่สำเร็จ: ' + response.data.message);
+        }
+      } catch (error) {
+        alert('มีข้อผิดพลาดในการเข้าสู่ระบบ: ' + error.response.data.message);
+      }
     }
   }
 };
