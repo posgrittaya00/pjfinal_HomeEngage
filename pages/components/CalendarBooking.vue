@@ -32,15 +32,7 @@
           <div class="date-picker">
             <input type="date" :value="formattedDate" readonly />
           </div>
-          <div class="time-picker">
-            <select v-model="selectedHour">
-              <option v-for="h in hours" :key="h" :value="h">{{ h }}</option>
-            </select>
-            <span>:</span>
-            <select v-model="selectedMinute">
-              <option v-for="m in minutes" :key="m" :value="m">{{ m }}</option>
-            </select>
-          </div>
+
         </div>
 
         <!-- ส่วนฟอร์ม -->
@@ -85,14 +77,8 @@ const selectedDate = ref(null);
 const year = ref(today.getFullYear());
 const month = ref(today.getMonth());
 
-const selectedHour = ref('13');
-const selectedMinute = ref('00');
-
 const userHasBooked = ref(false);
 const previouslySelectedDate = ref(null);
-
-const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
-const minutes = ['00', '05', '10' ,'15' ,'20' ,'25' , '30', '35', '40', '45', '50', '55'];
 
 const formattedDate = ref(''); // ตั้งค่าเป็น ref
 

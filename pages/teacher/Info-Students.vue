@@ -52,7 +52,7 @@ const goToProfile = () => {
 <style scoped>
   .container {
     display: flex;
-    height: 111vh;
+    height: 103vh;
     font-family: 'Inter', sans-serif;
   }
   
