@@ -235,7 +235,7 @@ export default {
         const username = localStorage.getItem('username');
 
         if (username) {
-          const response = await axios.get(`http://26.250.208.152:8000/api/student/${username}`);
+          const response = await axios.get(`http://localhost:8000/api/student/${username}`);
           if (response && response.data) {
             formData.value = response.data;  // Assign the fetched data
             await emit('updateData', response.data.Name);  // Emit the data to parent

@@ -30,7 +30,7 @@
 
 <script setup>
 
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import StudentDetails from '/pages/components/StudentDetails.vue';
 import Sidebar from '/pages/components/Sidebar.vue';
@@ -64,8 +64,8 @@ onMounted(() => {
 });
 
 const handleUpdateData = async (updateData) => {
-  user.value.Name = await updateData 
-}
+  user.value.Name = await updateData;
+};
 
 </script>
 
@@ -109,22 +109,22 @@ const handleUpdateData = async (updateData) => {
 }
 
 .info-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ECECEC;
-    border-radius: 8px 8px 0 0;
-    padding: 18px 20px;
-    font-size: 18px;
-    color: #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ECECEC;
+  border-radius: 8px 8px 0 0;
+  padding: 18px 20px;
+  font-size: 18px;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-  .info-text {
-    font-size: 18px;
-    font-weight: 500;
-    color: #333;
-  }
+.info-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
 
 .edit-button {
   background-color: #ff6b6b;
