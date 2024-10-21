@@ -92,18 +92,18 @@ const goToProfile = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #ECECEC; /* Adjust this color to match the background */
-    border-radius: 8px 8px 0 0; /* มุมมนเฉพาะด้านบน */
-    padding: 12px 20px;
-    font-size: 16px;
+    background-color: #ECECEC;
+    border-radius: 8px 8px 0 0;
+    padding: 18px 20px;
+    font-size: 18px;
     color: #333;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .info-text {
-        font-size: 18px;
-        font-weight: 500;
-        color: #333;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
   }
 
   .back {

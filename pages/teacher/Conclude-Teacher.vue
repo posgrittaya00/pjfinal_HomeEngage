@@ -11,13 +11,17 @@
         <h1>HOME ENGAGE</h1>
       </div>
       <div class="content-area">
-        <!-- ใส่เนื้อหาที่คุณต้องการที่นี่ -->
+        <div class="info-box">
+          <span class="info-text">สรุปผลข้อมูลการเยี่ยมบ้านนักเรียน</span>
+        </div>
+        <DonutChart />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import DonutChart from '../components/DonutChart.vue';
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue'
 import { useRouter } from 'vue-router'
 
@@ -32,7 +36,7 @@ const logout = () => {
 <style scoped>
 .container {
   display: flex;
-  height: 111vh;
+  height: 365vh;
   font-family: 'Inter', sans-serif;
 }
 
@@ -67,4 +71,22 @@ const logout = () => {
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+.info-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ECECEC;
+    border-radius: 8px 8px 0 0;
+    padding: 18px 20px;
+    font-size: 18px;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .info-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+  }
 </style>  

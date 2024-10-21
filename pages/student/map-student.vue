@@ -12,7 +12,7 @@
       </div>
       <div class="content-area">
         <div class="info-box">
-          <span class="info-text">{{ user.name }}</span>
+          <span class="info-text">{{ user.Name }}</span>
           <button class="edit-button" :class="{ 'save-button': isEditing }" @click="toggleEdit">
             {{ isEditing ? 'บันทึก' : 'แก้ไข' }}
           </button>
@@ -30,8 +30,8 @@
 
         <!-- Iframe สำหรับแสดงแผนที่ -->
         <iframe
-          v-if="user.mapUrl"
-          :src="user.mapUrl"
+          v-if="user.MapUrl"
+          :src="user.MapUrl"
           allowfullscreen=""
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
@@ -43,18 +43,25 @@
 </template>
 
 <script setup>
-import Sidebar from '/pages/components/Sidebar.vue';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+import Sidebar from '/pages/components/Sidebar.vue';
 
 // ข้อมูลของผู้ใช้งาน รวมถึง URL แผนที่
-const user = {
-  mapUrl: 'https://www.google.com/maps/place/Demonstration+School+of+Khon+Kaen+University+Nong+Khai+Campus/@17.8064835,102.7459776,16z/data=!4m14!1m7!3m6!1s0x31239d708023aa15:0x50c037631d1d7650!2sFountain+Roundabout!8m2!3d17.4043878!4d102.7939425!16s%2Fg%2F11cncb3frf!3m5!1s0x31247d2f92e78029:0x432ba858802e1735!8m2!3d17.8105875!4d102.7439352!16s%2Fg%2F11h0333y21?entry=ttu&g_ep=EgoyMDI0MTAwNS4yIKXMDSoASAFQAw%3D%3D' // URL ของ iframe
-};
+const user = ref({
+  Name: "", // ชื่อผู้ใช้งานที่จะดึงมาจากฐานข้อมูล
+  MapUrl: "" // URL แผนที่ที่จะดึงมาจากฐานข้อมูล
+});
 
-// การจัดการ router
-const router = useRouter();
+const isLoading = ref(false);
+const error = ref(null);
 const isActive = ref('map'); 
+const isEditing = ref(JSON.parse(localStorage.getItem('isEditing')) || false); 
+const mapInput = ref('');
+const router = useRouter(); 
+
+// ฟังก์ชันจัดการการสลับหน้าระหว่างแผนที่และโปรไฟล์
 const goToMap = () => {
   isActive.value = 'map'; 
   router.push('/student/Map-student'); 
@@ -65,23 +72,46 @@ const goToProfile = () => {
   router.push('/student/Profile-student'); 
 };
 
-const isEditing = ref(JSON.parse(localStorage.getItem('isEditing')) || false); 
-
 const toggleEdit = () => {
   isEditing.value = !isEditing.value;
   localStorage.setItem('isEditing', JSON.stringify(isEditing.value)); 
 };
 
-const mapInput = ref('');
+// ฟังก์ชันดึงข้อมูลจาก API
+const fetchData = async () => {
+  isLoading.value = true;
+  error.value = null;
+  
+  try {
+    const username = localStorage.getItem('username'); // ดึง username จาก localStorage
+    if (!username) {
+      throw new Error('Username not found in localStorage');
+    }
 
-// ฟังก์ชันสำหรับดึง URL แผนที่จากฐานข้อมูล
-const fetchMapUrl = async () => {
-  const storedUrl = localStorage.getItem('mapUrl'); 
-  if (storedUrl) {
-    user.mapUrl = storedUrl; 
+    const response = await axios.get(`http://26.250.208.152:8000/api/student/${username}`);
+    if (response && response.data) {
+      user.value.Name = response.data.Name; // ตั้งชื่อผู้ใช้จาก API
+      user.value.MapUrl = response.data.MapUrl; // ตั้ง URL ของแผนที่จาก API
+      localStorage.setItem('MapUrl', user.value.MapUrl); // เก็บ URL ลง localStorage
+    } else {
+      throw new Error('Failed to fetch data');
+    }
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    isLoading.value = false;
   }
 };
 
+// ฟังก์ชันดึง URL แผนที่จาก localStorage (ถ้ามี)
+const fetchMapUrl = () => {
+  const storedUrl = localStorage.getItem('MapUrl'); 
+  if (storedUrl) {
+    user.value.MapUrl = storedUrl;
+  }
+};
+
+// ฟังก์ชันสำหรับอัปเดต URL แผนที่ใหม่จาก input
 const updateMapUrl = () => {
   const url = mapInput.value.trim();
   let lat, lng;
@@ -119,9 +149,9 @@ const updateMapUrl = () => {
   }
 
   if (lat && lng) {
-    // สร้าง URL ที่ถูกต้องสำหรับ iframe
-    user.mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
-    localStorage.setItem('mapUrl', user.mapUrl); 
+    // ใช้ URL ที่ถูกต้องสำหรับการฝัง iframe
+    user.value.MapUrl = `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
+    localStorage.setItem('MapUrl', user.value.MapUrl); 
     mapInput.value = ''; 
   } else {
     alert('ไม่สามารถดึงพิกัดจาก URL ได้');
@@ -137,8 +167,11 @@ const convertDMSToDecimal = (degrees, minutes, seconds, direction) => {
   return decimal;
 };
 
-// ดึง URL แผนที่เมื่อ component ถูกสร้าง
-onMounted(fetchMapUrl);
+// ดึงข้อมูลเมื่อ component ถูกสร้าง
+onMounted(() => {
+  fetchMapUrl(); // ดึง URL จาก localStorage ถ้ามี
+  fetchData(); // ดึงข้อมูลจาก API
+});
 </script>
 
 <style scoped>
@@ -184,18 +217,18 @@ onMounted(fetchMapUrl);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #ECECEC; /* Adjust this color to match the background */
-    border-radius: 8px 8px 0 0; /* มุมมนเฉพาะด้านบน */
-    padding: 12px 20px;
-    font-size: 16px;
+    background-color: #ECECEC;
+    border-radius: 8px 8px 0 0;
+    padding: 18px 20px;
+    font-size: 18px;
     color: #333;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .info-text {
-        font-size: 18px;
-        font-weight: 500;
-        color: #333;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
   }
 
   .edit-button {
