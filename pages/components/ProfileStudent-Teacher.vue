@@ -21,7 +21,7 @@
           <td>
             <button class="status-button" 
                     :class="{ visited: student.firstVisit, 'not-visited': !student.firstVisit }"
-                    @click="goToFormStudent(student.stuId)">
+                    @click="goToFormStudent(student.StuId)">
               {{ student.firstVisit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
             </button>
           </td>
@@ -62,9 +62,11 @@ export default {
   setup() {
     const router = useRouter();
 
-    const goToFormStudent = (stuId) => {
+    const goToFormStudent = (StuId) => {
       // นำทางไปยังหน้า Form-Student และส่ง studentId
-      router.push(`/teacher/form-student/`);
+      console.log(StuId);
+      
+      router.push(`/teacher/form-student/${StuId}`);
     };
 
     const goToInfoStudents = () => {

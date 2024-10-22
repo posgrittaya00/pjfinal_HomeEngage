@@ -179,6 +179,7 @@
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import Stuid from '../teacher/form-student/[stuid].vue';
 
 export default {
   props: {
@@ -189,6 +190,9 @@ export default {
     onToggleEdit: {
       type: Function,
       required: true,
+    },
+    StuId:{
+      type: String,
     }
   },
   emits: ['updateData'],  // Correctly declare the emitted event
@@ -234,8 +238,9 @@ export default {
       try {
         const username = localStorage.getItem('username');
 
+        let params = (username && props.StuId) ? props.StuId : username
         if (username) {
-          const response = await axios.get(`http://localhost:8000/api/student/${username}`);
+          const response = await axios.get(`http://localhost:8000/api/student/${params}`);
           if (response && response.data) {
             formData.value = response.data;  // Assign the fetched data
             await emit('updateData', response.data.Name);  // Emit the data to parent
@@ -245,6 +250,7 @@ export default {
         } else {
           throw new Error("No username found in localStorage");
         }
+
       } catch (error) {
         console.error("Error fetching student data:", error.message);
         hasError.value = true;
