@@ -11,12 +11,14 @@
         <h1>HOME ENGAGE</h1>
       </div>
       <div class="content-area">
+        <CalendarTeacher />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import CalendarTeacher from '/pages/components/CalendarTeacher.vue'
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue'
 import { useRouter } from 'vue-router'
 
@@ -31,7 +33,7 @@ const logout = () => {
 <style scoped>
 .container {
   display: flex;
-  height: 111vh;
+  height: 114vh;
   font-family: 'Inter', sans-serif;
 }
 
