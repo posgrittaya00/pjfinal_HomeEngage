@@ -64,7 +64,7 @@ export default {
 
     const goToFormStudent = (stuId) => {
       // นำทางไปยังหน้า Form-Student และส่ง studentId
-      router.push(`/teacher/form-student/${stuId}`);
+      router.push(`/teacher/form-student/`);
     };
 
     const goToInfoStudents = () => {
