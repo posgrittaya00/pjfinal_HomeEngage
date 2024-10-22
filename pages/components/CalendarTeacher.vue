@@ -1,7 +1,4 @@
 <template>
-    <head>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    </head>
   <div class="calendar-container">
     <div class="calendar-flex">
       <Datepicker :current-month="currentMonth" :current-year="currentYear" @update-date="updateCurrentDate"/>
@@ -23,7 +20,8 @@
         </div>
         <div class="calendar-body">
           <div class="calendar-weekdays">
-            <div v-for="(day, index) in weekdays" :key="index" :class="{ 'weekend': index === 0 || index === 6 }" class="weekday">
+            <div v-for="(day, index) in weekdays" :key="index" 
+                 :class="['weekday', { 'sunday': index === 0, 'saturday': index === 6, 'weekend': index === 0 || index === 6 }]">
               {{ day }}
             </div>
           </div>
@@ -31,10 +29,27 @@
             <div
               v-for="(date, index) in dates"
               :key="index"
-              :class="['date', { 'not-current-month': !date.isCurrentMonth, 'today': isToday(date), 'weekend': isWeekend(date) }]"
+              :class="['date', { 
+                'not-current-month': !date.isCurrentMonth, 
+                'today': isToday(date), 
+                'weekend': isWeekend(date), 
+                'last-week': date.lastWeek 
+              }]"
               @click="selectDate(date)"
             >
-              <span>{{ date.day }}</span>
+              <span class="date-number">{{ date.day }}</span>
+              
+              <!-- Show booking names if date matches -->
+              <div class="booking-names" v-if="getBookingNamesForDate(date).length">
+                <span 
+                  v-for="(name, nameIndex) in getBookingNamesForDate(date)" 
+                  :key="nameIndex" 
+                  class="event-text" 
+                  :style="getRandomStyles(nameIndex)"
+                >
+                  {{ name }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -47,12 +62,47 @@
 import { ref, computed } from 'vue';
 import Datepicker from '/pages/components/Datepicker.vue';
 
+// Function to generate random color
+const getRandomColor = () => {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
+// Function to get a lighter version of the color
+const getLighterColor = (color) => {
+  const rgb = color.match(/\d+/g).map(Number);
+  const r = Math.min(255, Math.floor(rgb[0] + (255 - rgb[0]) * 0.5)); // Adjust brightness
+  const g = Math.min(255, Math.floor(rgb[1] + (255 - rgb[1]) * 0.5)); 
+  const b = Math.min(255, Math.floor(rgb[2] + (255 - rgb[2]) * 0.5)); 
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
+// Function to get random styles for names
+const getRandomStyles = (index) => {
+  const baseColor = getRandomColor(); // Generate a random color
+  return {
+    backgroundColor: getLighterColor(baseColor), // Lighter color for background
+    color: baseColor, // Darker color for text
+    marginRight: '5px' // Optional spacing between names
+  };
+};
+
 const currentDate = ref(new Date());
 const weekdays = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
 
 const currentYear = computed(() => currentDate.value.getFullYear());
 const currentMonth = computed(() => currentDate.value.getMonth());
 const currentMonthName = computed(() => currentDate.value.toLocaleString('th-TH', { month: 'long' }));
+
+const bookings = ref([
+  { date: '2024-10-04', names: ['นางสาวxxx xxx'] },
+  { date: '2024-10-04', names: ['นางสาว123 123'] },
+  { date: '2024-10-10', names: ['นายxxx xxx'] },
+  { date: '2024-10-15', names: ['นางสาวxxx xxx'] },
+  { date: '2024-10-15', names: ['นายxxx xxx'] }
+]);
 
 const generateDates = () => {
   const daysInCurrentMonth = new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
@@ -66,14 +116,17 @@ const generateDates = () => {
   const currentMonthDates = [...Array(daysInCurrentMonth)].map((_, i) => ({
     day: i + 1,
     isCurrentMonth: true,
+    lastWeek: (i >= (daysInCurrentMonth - 2)) // Check if it's the last week of the month
   }));
 
-  const nextMonthDates = [...Array(42 - prevMonthDates.length - currentMonthDates.length)].map((_, i) => ({
+  const totalDisplayedDates = 5 * 7; // 5 rows x 7 days
+  const nextMonthDatesCount = totalDisplayedDates - (prevMonthDates.length + currentMonthDates.length);
+  const nextMonthDates = [...Array(nextMonthDatesCount)].map((_, i) => ({
     day: i + 1,
     isCurrentMonth: false,
   }));
 
-  return [...prevMonthDates, ...currentMonthDates, ...nextMonthDates];
+  return [...prevMonthDates, ...currentMonthDates, ...nextMonthDates].slice(0, totalDisplayedDates);
 };
 
 const dates = computed(() => generateDates());
@@ -103,7 +156,16 @@ const isWeekend = (date) => {
 const updateCurrentDate = (date) => {
   currentDate.value = date;
 };
+
+// Function to get booking names for the specific date
+const getBookingNamesForDate = (date) => {
+  const dateString = `${currentYear.value}-${String(currentMonth.value + 1).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+  return bookings.value
+    .filter(b => b.date === dateString) // Filter bookings by date
+    .flatMap(b => b.names); // Combine names into a single array
+};
 </script>
+
 
 <style scoped>
 .calendar-container {
@@ -130,6 +192,7 @@ const updateCurrentDate = (date) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
@@ -154,37 +217,20 @@ const updateCurrentDate = (date) => {
   width: 40px;
   height: 40px;
   display: flex;
+  color: #56A7F5;
   justify-content: center;
   align-items: center;
 }
 
 .today-button {
   font-weight: bold;
+  font-size: 14px;
   padding: 6px 15px;
-}
-
-.current-month {
+  color: #56A7F5;
+  height: 40px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 100%;
-  position: relative;
-}
-
-.month {
-  text-align: center;
-  margin-right: 130px;
-  font-size: 1.4em;
-  font-weight: normal;
-  color: #333;
-  flex-grow: 1;
-}
-
-.year {
-  font-size: 1.2em;
-  font-weight: normal;
-  text-align: right;
-  color: #333;
+  justify-content: center;
 }
 
 .calendar-body {
@@ -200,63 +246,65 @@ const updateCurrentDate = (date) => {
 .weekday, .date {
   width: calc(100% / 7);
   box-sizing: border-box;
-  text-align: center;
   padding: 10px;
   font-weight: normal;
   font-size: 16px;
 }
 
 .weekday {
-  background-color: #ffffff;
-  color: #333;
+  text-align: left;
+  color: #676767;
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+
+.sunday {
+  border-top-left-radius: 10px;
+}
+
+.saturday {
+  border-top-right-radius: 10px;
 }
 
 .weekend {
   color: red;
 }
 
-.date {
-  height: calc(100vh / 8);
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  border: 1px solid #ddd;
-  position: relative;
-}
-
-.date span {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  color: #999;
-  font-size: 14px; /* ปรับขนาดฟอนต์เป็น 14px */
-}
-
 .weekend span {
   color: red;
-  font-size: 14px; /* ปรับขนาดฟอนต์เป็น 14px */
+  font-size: 14px;
 }
 
-.not-current-month span {
-  color: #ddd;
-  font-size: 14px; /* ปรับขนาดฟอนต์เป็น 14px */
-}
-
-.today {
-  background-color: #f0f0f0;
-}
-
-/* Style for Datepicker */
-.datepicker {
-  width: 300px;
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-bottom: 350px;
-}
-
-.datepicker-container {
+.date {
+  position: relative;
+  height: calc(100vh / 8);
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  flex-direction: column; /* ให้ชิดขอบล่าง */
+  justify-content: space-between; /* ให้วันที่อยู่มุมซ้ายบน */
+  border: 1px solid #ddd;
+}
+
+.date-number {
+  position: absolute;
+  top: 5px; /* ตำแหน่งวันที่ */
+  left: 5px;
+  color: #969696;
+  font-size: 14px;
+}
+
+.booking-names {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: auto; /* ชิดขอบล่าง */
+  margin-right: 15px;
+}
+
+.event-text {
+  font-size: 11px;
+  padding: 3px 3px; /* ระยะห่างภายใน */
+  border-radius: 3px; /* ขอบมน */
+  display: inline-block; /* ให้พื้นหลังครอบคลุมข้อความ */
+  margin-bottom: 2px; /* เพิ่มระยะห่างระหว่างชื่อ */
 }
 </style>

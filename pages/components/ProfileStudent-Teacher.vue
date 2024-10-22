@@ -19,21 +19,17 @@
           <td>{{ student.Name }}</td>
           <td>{{ student.StuClass }}</td>
           <td>
-            <button class="status-button" :class="{ visited: student.firstVisit === 'visited', 'not-visited': student.firstVisit !== 'visited' }">
-              <svg v-if="student.firstVisit === 'visited'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              {{ student.firstVisit === 'visited' ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
+            <button class="status-button" 
+                    :class="{ visited: student.firstVisit, 'not-visited': !student.firstVisit }"
+                    @click="goToFormStudent(student.stuId)">
+              {{ student.firstVisit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
             </button>
           </td>
           <td>
-            <button class="status-button" :class="{ visited: student.secondVisit === 'visited', 'not-visited': student.secondVisit !== 'visited' }">
-              <svg v-if="student.secondVisit === 'visited'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-              {{ student.secondVisit === 'visited' ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
+            <button class="status-button" 
+                    :class="{ visited: student.secondVisit, 'not-visited': !student.secondVisit }"
+                    @click="goToFormStudent(student.stuId)">
+              {{ student.secondVisit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
             </button>
           </td>
           <td>
@@ -66,12 +62,18 @@ export default {
   setup() {
     const router = useRouter();
 
+    const goToFormStudent = (stuId) => {
+      // นำทางไปยังหน้า Form-Student และส่ง studentId
+      router.push(`/teacher/form-student/${stuId}`);
+    };
+
     const goToInfoStudents = () => {
       router.push('/teacher/Info-Students'); // นำทางไปยังเส้นทางที่ต้องการ
     };
 
     return {
       goToInfoStudents,
+      goToFormStudent,
     };
   },
 };

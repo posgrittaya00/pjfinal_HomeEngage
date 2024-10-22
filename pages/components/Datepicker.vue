@@ -98,30 +98,30 @@ export default {
 <style scoped>
 .calendar {
   width: 100%;
-  max-width: 300px; /* จำกัดความกว้างสูงสุดของปฏิทิน */
+  max-width: 250px; /* ลดความกว้างสูงสุดของปฏิทิน */
   margin-right: 30px;
   font-family: 'Inter', sans-serif;
 }
 .calendar-header {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 14px; /* ลดขนาดฟอนต์ของหัวเรื่อง */
   text-align: left;
-  padding-left: 10px;
+  padding-left: 8px; /* ลด padding */
   margin-bottom: 0;
 }
 .calendar-grid {
   display: grid;
-  font-size: 14px;
+  font-size: 12px; /* ลดขนาดฟอนต์ของวัน */
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: 4px; /* ลดระยะห่างระหว่างวัน */
   margin-top: 5px;
 }
 .day {
-  padding: 10px;
+  padding: 8px; /* ลด padding ของวัน */
   text-align: center;
   box-sizing: border-box;
-  height: 50px;
-  display: flex;  /* ใช้ flexbox สำหรับจัดแนวทุกช่อง */
+  height: 40px; /* ลดความสูงของแต่ละวัน */
+  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -130,9 +130,8 @@ export default {
   color: white;
   border-radius: 50%;
   font-weight: bold;
-  width: 40px;
-  height: 40px;
+  width: 30px; /* ลดขนาดของวงกลมสำหรับวันปัจจุบัน */
+  height: 30px; /* ลดความสูงของวงกลมสำหรับวันปัจจุบัน */
   margin: auto;
 }
 </style>
-

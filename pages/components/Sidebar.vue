@@ -36,7 +36,7 @@
   
 <script setup>
   const user = {
-    profileImage:'/images/User.png',
+    profileImage:'/images/Student.png',
     Name: "นาย xxx xxx", 
     stuClass: "ชั้นม.5/1", 
     stuId: "xxxxxxxxx-x"}

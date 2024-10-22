@@ -44,7 +44,7 @@
   
 <script setup>
   const user = {
-    profileImage:'/images/User.png',
+    profileImage:'/images/Teacher.png',
     Name: "นาย xxx xxx", 
     teacherId: "xxxxxxxxx-x"}
   

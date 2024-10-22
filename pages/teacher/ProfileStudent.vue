@@ -55,39 +55,18 @@ const searchQuery = ref("");
 
   // ข้อมูลนักเรียนทั้งหมด
   const students = ref([
-  { stuId: "001", Name: "นายสมชาย ใจดี", stuClass: "ม.5/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "002", Name: "นางสาววิไล ศรีสุข", stuClass: "ม.4/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "003", Name: "นายสมบัติ สุขใจ", stuClass: "ม.6/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "004", Name: "นายประสิทธิ์ มงคล", stuClass: "ม.3/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "005", Name: "นางสาวชลธิชา พูนสุข", stuClass: "ม.5/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "006", Name: "นายกิตติภูมิ แก้วมณี", stuClass: "ม.4/3", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "007", Name: "นางสาวดารารัตน์ ใจมั่น", stuClass: "ม.6/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "008", Name: "นายธนวัฒน์ ศิริกุล", stuClass: "ม.5/3", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "009", Name: "นางสาววิภาวดี ชื่นชม", stuClass: "ม.4/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "010", Name: "นายวิทยา สว่างวงศ์", stuClass: "ม.6/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-
-  { stuId: "001", Name: "นายสมชาย ใจดี", stuClass: "ม.5/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "002", Name: "นางสาววิไล ศรีสุข", stuClass: "ม.4/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "003", Name: "นายสมบัติ สุขใจ", stuClass: "ม.6/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "004", Name: "นายประสิทธิ์ มงคล", stuClass: "ม.3/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "005", Name: "นางสาวชลธิชา พูนสุข", stuClass: "ม.5/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "006", Name: "นายกิตติภูมิ แก้วมณี", stuClass: "ม.4/3", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "007", Name: "นางสาวดารารัตน์ ใจมั่น", stuClass: "ม.6/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "008", Name: "นายธนวัฒน์ ศิริกุล", stuClass: "ม.5/3", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "009", Name: "นางสาววิภาวดี ชื่นชม", stuClass: "ม.4/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "010", Name: "นายวิทยา สว่างวงศ์", stuClass: "ม.6/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-
-  { stuId: "001", Name: "นายสมชาย ใจดี", stuClass: "ม.5/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "002", Name: "นางสาววิไล ศรีสุข", stuClass: "ม.4/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "003", Name: "นายสมบัติ สุขใจ", stuClass: "ม.6/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "004", Name: "นายประสิทธิ์ มงคล", stuClass: "ม.3/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "005", Name: "นางสาวชลธิชา พูนสุข", stuClass: "ม.5/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "006", Name: "นายกิตติภูมิ แก้วมณี", stuClass: "ม.4/3", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "007", Name: "นางสาวดารารัตน์ ใจมั่น", stuClass: "ม.6/2", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "008", Name: "นายธนวัฒน์ ศิริกุล", stuClass: "ม.5/3", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "009", Name: "นางสาววิภาวดี ชื่นชม", stuClass: "ม.4/1", firstVisit: "not_visited", secondVisit: "not_visited" },
-  { stuId: "010", Name: "นายวิทยา สว่างวงศ์", stuClass: "ม.6/1", firstVisit: "not_visited", secondVisit: "not_visited" },
+  { stuId: "001", Name: "นายสมชาย ใจดี", stuClass: "ม.5/1", firstVisit: false, secondVisit: false },
+  { stuId: "002", Name: "นางสาววิไล ศรีสุข", stuClass: "ม.4/2", firstVisit: false, secondVisit: false },
+  { stuId: "003", Name: "นายสมบัติ สุขใจ", stuClass: "ม.6/1", firstVisit: false, secondVisit: false },
+  { stuId: "004", Name: "นายประสิทธิ์ มงคล", stuClass: "ม.3/1", firstVisit: false, secondVisit: false },
+  { stuId: "005", Name: "นางสาวชลธิชา พูนสุข", stuClass: "ม.5/2", firstVisit: false, secondVisit: false },
+  { stuId: "006", Name: "นายกิตติภูมิ แก้วมณี", stuClass: "ม.4/3", firstVisit: false, secondVisit: false },
+  { stuId: "007", Name: "นางสาวดารารัตน์ ใจมั่น", stuClass: "ม.6/2", firstVisit: false, secondVisit: false },
+  { stuId: "008", Name: "นายธนวัฒน์ ศิริกุล", stuClass: "ม.5/3", firstVisit: false, secondVisit: false },
+  { stuId: "009", Name: "นางสาววิภาวดี ชื่นชม", stuClass: "ม.4/1", firstVisit: false, secondVisit: false },
+  { stuId: "010", Name: "นายวิทยา สว่างวงศ์", stuClass: "ม.6/1", firstVisit: false, secondVisit: false }
 ]);
+
 
 const filteredStudents = computed(() => {
   const filtered = students.value.filter(student =>
