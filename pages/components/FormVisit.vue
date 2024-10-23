@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h2 v-if="localSections && localSections.Name" class="main-title">{{ localSections.Name }}</h2>
-    <h2 v-else class="main-title">Loading...</h2>
-
     <div v-if="localSections && localSections.Sections">
       <div v-for="(section, _) in localSections.Sections" :key="section.ID" class="section">
         <h3 class="section-title">{{ section.Title }}</h3>
