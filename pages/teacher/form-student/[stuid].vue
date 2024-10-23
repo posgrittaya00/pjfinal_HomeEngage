@@ -44,7 +44,7 @@ const showFormVisit = ref(false); // สร้างตัวแปรเพื�
 // ฟังก์ชันดึงข้อมูล sections ของฟอร์ม
 const fetchFormSections = async () => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/forms/`);
+    const response = await axios.get(`http://26.250.208.152:8000/api/forms/`);
     formSections.value = response.data[0]; 
     console.log('Fetched form sections:', formSections.value); // Log the data here
   } catch (error) {

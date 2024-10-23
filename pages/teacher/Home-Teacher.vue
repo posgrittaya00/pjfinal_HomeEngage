@@ -59,7 +59,7 @@ const isLoading = ref(true);
         const username = localStorage.getItem('username');
 
         if (username) {
-          const response = await axios.get(`http://localhost:8000/api/teacher/students/${username}`);
+          const response = await axios.get(`http://26.250.208.152:8000/api/teacher/students/${username}`);
           
           if (response && response.data) {
             students.value = response.data;  // Assign the fetched data
