@@ -13,7 +13,7 @@
         <div class="student-form" >
           <StudentDetails :StuId="stuId" v-if="!showFormVisit" />
           <div class="form-visit" v-else >
-          <FormVisit :sections="formSections" />
+          <FormVisit :sections="formSections.value" v-if="Object.keys(formSections).length > 0" />
         </div>
         </div>
 
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive  } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
@@ -38,14 +38,15 @@ const route = useRoute();
 const stuId = route.params.stuid;
 
 // สร้าง state เพื่อเก็บข้อมูล sections ของฟอร์ม
-const formSections = ref([]);
+const formSections = reactive({});
 const showFormVisit = ref(false); // สร้างตัวแปรเพื่อควบคุมการแสดงฟอร์ม
 
 // ฟังก์ชันดึงข้อมูล sections ของฟอร์ม
 const fetchFormSections = async () => {
   try {
     const response = await axios.get(`http://localhost:8000/api/forms/`);
-    formSections.value = response.data.sections; // สมมติว่าข้อมูลจาก backend มีโครงสร้างแบบนี้
+    formSections.value = response.data[0]; 
+    console.log('Fetched form sections:', formSections.value); // Log the data here
   } catch (error) {
     console.error('เกิดข้อผิดพลาดในการดึงข้อมูลฟอร์ม:', error);
   }
@@ -53,9 +54,14 @@ const fetchFormSections = async () => {
 
 // ฟังก์ชันสำหรับการกดปุ่ม "ต่อไป" และดึงข้อมูลฟอร์ม
 const goToFormVisit = async () => {
-  showFormVisit.value = true; // แสดงฟอร์ม
-  await fetchFormSections(); // ดึงข้อมูลฟอร์มหลังจากกดปุ่ม
+  try {
+    await fetchFormSections(); // ดึงข้อมูลฟอร์มหลังจากกดปุ่ม
+    showFormVisit.value = true; // แสดงฟอร์ม
+  } catch (error) {
+    console.error(error)
+  }
 };
+
 </script>
 
   <style scoped>
