@@ -240,7 +240,7 @@ export default {
 
         let params = (username && props.StuId) ? props.StuId : username
         if (username) {
-          const response = await axios.get(`http://localhost:8000/api/student/${params}`);
+          const response = await axios.get(`http://26.250.208.152:8000/api/student/${params}`);
           if (response && response.data) {
             formData.value = response.data;  // Assign the fetched data
             await emit('updateData', response.data.Name);  // Emit the data to parent

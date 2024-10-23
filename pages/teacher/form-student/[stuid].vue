@@ -68,7 +68,7 @@ const goToFormVisit = async () => {
     /* สไตล์เดิม */
     .container {
       display: flex;
-      height: 128vh;
+      height: 120vh;
       font-family: 'Inter', sans-serif;
     }
 
@@ -172,7 +172,7 @@ const goToFormVisit = async () => {
     .next-button-container {
       display: flex;
       justify-content: center;
-      margin-top: 20px;
+      font-family: 'Inter', sans-serif;
     }
     .next-button {
       padding: 10px 20px;
