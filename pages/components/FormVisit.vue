@@ -4,10 +4,12 @@
     <h2 v-else class="main-title">Loading...</h2>
 
     <div v-if="localSections && localSections.Sections">
-      <div v-for="section in localSections.Sections" :key="section.ID" class="section">
+      <div v-for="(section, _) in localSections.Sections" :key="section.ID" class="section">
         <h3 class="section-title">{{ section.Title }}</h3>
-        <div v-for="field in section.Fields" :key="field.ID" class="field">
-          <div class="field-label">{{ field.Label }}</div>
+        <div v-for="(field, index) in section.Fields" :key="field.ID" class="field">
+          <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label
+            }}
+          </div>
           <div class="field-options">
             <div v-if="field.FieldType === 'radio'" class="radio-group">
               <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
@@ -39,6 +41,12 @@ const props = defineProps({
 
 const localSections = ref(props.sections);
 
+const sortSections = (sections) => {
+  if (sections && sections.Sections) {
+    sections.Sections.sort((a, b) => a.ID - b.ID);
+  }
+};
+
 const parseOptions = (options) => {
   try {
     const sanitizedOptions = options.replace(/\n/g, '').trim();
@@ -56,6 +64,9 @@ watch(() => props.sections, (newSections) => {
 });
 
 onMounted(() => {
+  if (localSections.value) {
+    sortSections(localSections.value); // Sort by ID
+  }
   console.log("FormVisit received sections on mount:", localSections.value);
 });
 </script>
@@ -150,9 +161,9 @@ onMounted(() => {
 .radio-input {
   margin-right: 5px;
   /* เพิ่มระยะห่างระหว่างปุ่ม radio กับข้อความ */
-  width: 24px;
+  width: 16px;
   /* ขยายขนาด radio button */
-  height: 24px;
+  height: 16px;
   /* ขยายขนาด radio button */
   appearance: none;
   /* ลบรูปแบบเริ่มต้นของ radio button */
