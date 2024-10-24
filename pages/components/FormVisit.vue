@@ -1,21 +1,25 @@
 <template>
   <div>
-    <div v-if="localSections && localSections.Sections">
-      <div v-for="(section, _) in localSections.Sections" :key="section.ID" class="section">
-        <h3 class="section-title">{{ section.Title }}</h3>
-        <div v-for="(field, index) in section.Fields" :key="field.ID" class="field">
-          <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label
-            }}
-          </div>
-          <div class="field-options">
-            <div v-if="field.FieldType === 'radio'" class="radio-group">
-              <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
-                <input type="radio" :name="field.ID" :value="option" v-model="field.value" class="radio-input" />
-                <label class="radio-label">{{ option }}</label>
-              </div>
+    <div v-if="localSections">
+      <div v-for="(context, _) in localSections" :key="_" class="section">
+        <h3 class="main-section">{{ context.Name }}</h3>
+
+        <div v-for="(section, _) in context.Sections" :key="_" class="section">
+          <h3 class="section-title">{{ section.Title }}</h3>
+          <div v-for="(field, index) in section.Fields" :key="field.ID" class="field">
+            <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label
+              }}
             </div>
-            <input v-if="field.FieldType === 'textarea'" v-model="field.value" class="input-text" />
-            <input v-if="field.FieldType === 'text'" type="text" v-model="field.value" class="input-text" />
+            <div class="field-options">
+              <div v-if="field.FieldType === 'radio'" class="radio-group">
+                <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
+                  <input type="radio" :name="field.ID" :value="option" v-model="field.value" class="radio-input" />
+                  <label class="radio-label">{{ option }}</label>
+                </div>
+              </div>
+              <input v-if="field.FieldType === 'textarea'" v-model="field.value" class="input-text" />
+              <input v-if="field.FieldType === 'text'" type="text" v-model="field.value" class="input-text" />
+            </div>
           </div>
         </div>
       </div>
@@ -35,18 +39,18 @@ import axios from 'axios';
 
 const props = defineProps({
   sections: {
-    type: Object,
+    type: Array,
     default: null,
   },
 });
 
 const localSections = ref(props.sections);
 
-const sortSections = (sections) => {
-  if (sections && sections.Sections) {
-    sections.Sections.sort((a, b) => a.ID - b.ID);
-  }
-};
+// const sortSections = (sections) => {
+//   if (sections && sections.Sections) {
+//     sections.Sections.sort((a, b) => a.ID - b.ID);
+//   }
+// };
 
 const parseOptions = (options) => {
   try {
@@ -61,8 +65,8 @@ const parseOptions = (options) => {
 // ฟังก์ชันสำหรับส่งข้อมูลฟอร์มไปยัง backend
 const saveForm = async () => {
   const formData = {
-    teacherID: 1, // เปลี่ยนตามข้อมูลจริง
-    studentID: 2, // เปลี่ยนตามข้อมูลจริง
+    teacherID: "64001", // เปลี่ยนตามข้อมูลจริง
+    studentID: "66790", // เปลี่ยนตามข้อมูลจริง
     term: "2024 Term", // เปลี่ยนตามข้อมูลจริง
     names: [
       { role: "teacher", name: "John Teacher" }, // เปลี่ยนตามข้อมูลจริง
@@ -81,7 +85,7 @@ const saveForm = async () => {
 
   try {
     // ส่งข้อมูลไปยัง backend
-    const response = await axios.post('http://localhost:8081/api/form-responses/create', formData);
+    const response = await axios.post('http://26.250.208.152:8081/api/form-responses/create', formData);
     console.log('Form saved successfully:', response.data);
     alert('บันทึกฟอร์มสำเร็จ!');
   } catch (error) {
@@ -89,6 +93,7 @@ const saveForm = async () => {
     alert('บันทึกฟอร์มไม่สำเร็จ');
   }
 };
+
 watch(() => props.sections, (newSections) => {
   if (newSections) {
     localSections.value = newSections;
@@ -97,13 +102,33 @@ watch(() => props.sections, (newSections) => {
 
 onMounted(() => {
   if (localSections.value) {
-    sortSections(localSections.value); // Sort by ID
+    // sortSections(localSections.value); // Sort by ID
   }
-  console.log("FormVisit received sections on mount:", localSections.value);
+
 });
 </script>
 
 <style scoped>
+.main-section {
+  background-color: #b695f3;
+  /* พื้นหลังสีฟ้าน้ำเงินอ่อน */
+  color: #ffffff;
+  /* สีข้อความ */
+  padding: 5px 10px;
+  /* เพิ่มระยะห่างภายใน */
+  border-radius: 3px;
+  /* ทำมุมให้มน */
+  font-size: 18px;
+  /* ขนาดฟอนต์ */
+  display: inline-block;
+  /* ให้เป็นบล็อกในแนวนอน */
+  margin-bottom: 5px;
+  /* เพิ่มระยะห่างด้านล่าง */
+  margin-left: 15px;
+  /* ขยับไปทางซ้าย 20px */
+}
+
+
 .main-title {
   font-size: 20px;
   /* ขนาดฟอนต์ */
@@ -115,6 +140,7 @@ onMounted(() => {
   margin-left: 15px;
   /* ขยับไปทางซ้าย 20px */
 }
+
 
 .section {
   margin-bottom: 15px;
@@ -245,7 +271,8 @@ onMounted(() => {
 
 .button-container {
   display: flex;
-  justify-content: center; /* จัดให้ปุ่มอยู่ตรงกลางแนวนอน */
+  justify-content: center;
+  /* จัดให้ปุ่มอยู่ตรงกลางแนวนอน */
   margin-top: 20px;
 }
 
