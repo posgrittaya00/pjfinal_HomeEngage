@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="button-container">
-        <button @click="saveForm" class="save-button">Save</button>
+        <button @click="saveForm" class="save-button">บันทึก</button>
       </div>
     </div>
     <div v-else>
@@ -31,6 +31,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
   sections: {
@@ -57,6 +58,37 @@ const parseOptions = (options) => {
   }
 };
 
+// ฟังก์ชันสำหรับส่งข้อมูลฟอร์มไปยัง backend
+const saveForm = async () => {
+  const formData = {
+    teacherID: 1, // เปลี่ยนตามข้อมูลจริง
+    studentID: 2, // เปลี่ยนตามข้อมูลจริง
+    term: "2024 Term", // เปลี่ยนตามข้อมูลจริง
+    names: [
+      { role: "teacher", name: "John Teacher" }, // เปลี่ยนตามข้อมูลจริง
+      { role: "student", name: "Jane Student" }, // เปลี่ยนตามข้อมูลจริง
+      { role: "parent", name: "John Parent" }    // เปลี่ยนตามข้อมูลจริง
+    ],
+    sections: localSections.value.Sections.map(section => ({
+      sectionID: section.ID,
+      title: section.Title,
+      fields: section.Fields.map(field => ({
+        fieldID: field.ID,
+        value: field.value
+      }))
+    }))
+  };
+
+  try {
+    // ส่งข้อมูลไปยัง backend
+    const response = await axios.post('http://localhost:8081/api/form-responses/create', formData);
+    console.log('Form saved successfully:', response.data);
+    alert('บันทึกฟอร์มสำเร็จ!');
+  } catch (error) {
+    console.error('Failed to save form:', error);
+    alert('บันทึกฟอร์มไม่สำเร็จ');
+  }
+};
 watch(() => props.sections, (newSections) => {
   if (newSections) {
     localSections.value = newSections;
