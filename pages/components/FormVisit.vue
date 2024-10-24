@@ -19,6 +19,9 @@
           </div>
         </div>
       </div>
+      <div class="button-container">
+        <button @click="saveForm" class="save-button">Save</button>
+      </div>
     </div>
     <div v-else>
       <p>No sections available</p>
@@ -206,5 +209,24 @@ onMounted(() => {
   /* ขนาดฟอนต์สำหรับ label */
   line-height: 20px;
   /* ปรับความสูงของบรรทัดให้เหมาะสม */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* จัดให้ปุ่มอยู่ตรงกลางแนวนอน */
+  margin-top: 20px;
+}
+
+.save-button {
+  padding: 10px 20px;
+  background-color: #56A7F5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background-color: #4195e0;
 }
 </style>
