@@ -14,7 +14,7 @@
         <div class="info-box">
           <span class="info-text">ข้อมูลนักเรียน</span>
           <router-link to="/teacher/ProfileStudent">
-            <button class="back" @click="toggleEdit">ย้อนกลับ</button>
+            <button class="back">ย้อนกลับ</button>
           </router-link>
         </div>
         <div class="button-container">
