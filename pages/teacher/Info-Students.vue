@@ -13,7 +13,7 @@
       <div class="content-area">
         <div class="info-box">
           <span class="info-text">ข้อมูลนักเรียน</span>
-          <router-link to="/teacher/ProfileStudent">
+          <router-link to="/teacher/Home-Teacher">
             <button class="back">ย้อนกลับ</button>
           </router-link>
         </div>
