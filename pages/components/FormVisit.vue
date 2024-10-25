@@ -1,36 +1,32 @@
 <template>
-  <div>
-    <div v-if="localSections">
-      <div v-for="(context, _) in localSections" :key="_" class="section">
-        <h3 class="main-section">{{ context.Name }}</h3>
-
-        <div v-for="(section, _) in context.Sections" :key="_" class="section">
-          <h3 class="section-title">{{ section.Title }}</h3>
-          <div v-for="(field, index) in section.Fields" :key="field.ID" class="field">
-            <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label
-              }}
-            </div>
-            <div class="field-options">
-              <div v-if="field.FieldType === 'radio'" class="radio-group">
-                <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
-                  <input type="radio" :name="field.ID" :value="option" v-model="field.value" class="radio-input" />
-                  <label class="radio-label">{{ option }}</label>
-                </div>
-              </div>
-              <input v-if="field.FieldType === 'textarea'" v-model="field.value" class="input-text" />
-              <input v-if="field.FieldType === 'text'" type="text" v-model="field.value" class="input-text" />
+  <div v-if="localSections" v-for="(context, _) in localSections" :key="_" class="section">
+    <h3 class="main-section">{{ context.Name }}</h3>
+    <div v-for="(section, _) in context.Sections" :key="_" class="section">
+      <h3 class="section-title">{{ section.Title }}</h3>
+      <div v-for="(field, index) in section.Fields" :key="field.ID" class="field">
+        <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label
+          }}
+        </div>
+        <div class="field-options">
+          <div v-if="field.FieldType === 'radio'" class="radio-group">
+            <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
+              <input type="radio" :name="field.ID" :value="option" v-model="field.value" class="radio-input" />
+              <label class="radio-label">{{ option }}</label>
             </div>
           </div>
+          <input v-if="field.FieldType === 'textarea'" v-model="field.value" class="input-text" />
+          <input v-if="field.FieldType === 'text'" type="text" v-model="field.value" class="input-text" />
         </div>
       </div>
-      <div class="button-container">
-        <button @click="saveForm" class="save-button">บันทึก</button>
-      </div>
-    </div>
-    <div v-else>
-      <p>No sections available</p>
     </div>
   </div>
+  <div v-else>
+    <p>No sections available</p>
+  </div>
+  <div class="button-container">
+    <button @click="saveForm" class="save-button">บันทึก</button>
+  </div>
+
 </template>
 
 <script setup>

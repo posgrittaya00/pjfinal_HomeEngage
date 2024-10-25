@@ -1,0 +1,25 @@
+body {
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.form-visit::-webkit-scrollbar {
+  width: 0.75vw;
+}
+
+.form-visit::-webkit-scrollbar-track {
+  background-color: #929292;
+  border-radius: 5px;
+  margin: 0.25vw;
+}
+
+.form-visit::-webkit-scrollbar-thumb {
+  background-color: #818181;
+  border-radius: 5px;
+}
+
+.form-visit::-webkit-scrollbar-thumb:hover {
+  background-color: #3b8fd3;
+}

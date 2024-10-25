@@ -7,8 +7,6 @@
         ...loading
       </div>
     <div class="student-details" v-else>
-      
-
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล</label>
