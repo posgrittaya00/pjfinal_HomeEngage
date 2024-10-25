@@ -9,7 +9,7 @@
       <div class="content-area">
         <div class="info-box">
           <span class="info-text">เพิ่มข้อมูลการเยี่ยมบ้านนักเรียน</span>
-          <button class="save-button" @click="saveDataStudent">บันทึกข้อมูล</button>
+          <button class="save-button" @click="saveData">บันทึกข้อมูล</button>
           <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
         </div>
 
@@ -31,12 +31,11 @@ import axios from 'axios';
 
 const successMessage = ref('');
 
-const saveDataStudent = async () => {
-
-  const StudentDetailsTeacher = ref(null);
+const saveData = async () => {
+  const studentDetails = ref(null);
   try {
-    StudentDetailsTeacher.value = await $refs.StudentDetailsTeacher.formData;
-    const response = await axios.post('http://26.250.208.152:8000/api/student', StudentDetailsTeacher.value);
+    studentDetails.value = await $refs.studentDetails.formData;
+    const response = await axios.post('http://26.250.208.152:8000/api/student', studentDetails.value);
     if (response.status === 200) {
       successMessage.value = 'บันทึกข้อมูลสำเร็จ!';
       setTimeout(() => {
@@ -106,6 +105,7 @@ const saveDataStudent = async () => {
 
 .student-details {
   margin: 0; /* ปรับให้ไม่มี margin */
+  padding: 0; /* ลด padding ถ้ามี */
 }
 
 .save-button {

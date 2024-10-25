@@ -28,13 +28,13 @@
                         <label>ระดับชั้น</label>
                         <span class="detail-span">{{ formData.StuClass }}</span>
                     </div>
-                    <div class="field">
-                        <label>เกิดวันที่</label>
-                        <span class="detail-span">{{ formData.StuBirthDate }}</span>
-                    </div>
                 </div>
 
                 <div class="row">
+                  <div class="field">
+                        <label>เกิดวันที่</label>
+                        <span class="detail-span">{{ formData.StuBirthDate }}</span>
+                    </div>
                     <div class="field full-width">
                         <label>ที่อยู่</label>
                         <span class="detail-span" v-if="!isEditing">{{ formData.Address }}</span>
@@ -134,14 +134,14 @@
                         <span class="detail-span" v-if="!isEditing">{{ formData.ParentAddress }}</span>
                         <input v-if="isEditing" v-model="formData.ParentAddress" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="field">
                         <label>สถานภาพของบิดามารดา</label>
                         <span class="detail-span" v-if="!isEditing">{{ formData.PStatus }}</span>
                         <input v-if="isEditing" v-model="formData.PStatus" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
+                </div>
+
+                <div class="row">
                     <div class="field">
                         <label>นักเรียนพักอาศัยอยู่กับใคร</label>
                         <span class="detail-span" v-if="!isEditing">{{ formData.LivesWith }}</span>
@@ -157,9 +157,6 @@
                         <span class="detail-span" v-if="!isEditing">{{ formData.SibStudy }}</span>
                         <input v-if="isEditing" v-model="formData.SibStudy" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="field">
                         <label>ประกอบอาชีพกี่คน</label>
                         <span class="detail-span" v-if="!isEditing">{{ formData.EmpCount }}</span>

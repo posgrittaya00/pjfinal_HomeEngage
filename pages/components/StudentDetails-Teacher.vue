@@ -28,13 +28,13 @@
         <label>ระดับชั้น</label>
         <input v-model="formData.StuClass" class="Editdetail-span" @blur="stopEditing" />
       </div>
+    </div>
+
+    <div class="row">
       <div class="field">
         <label>เกิดวันที่</label>
         <input v-model="formData.StuBirthDate" class="Editdetail-span" @blur="stopEditing" />
       </div>
-    </div>
-
-    <div class="row">
       <div class="field full-width">
         <label>ที่อยู่</label>
         <input v-model="formData.Address" class="Editdetail-span" @blur="stopEditing" />
@@ -116,13 +116,13 @@
         <label>ที่อยู่ที่ติดต่อได้</label>
         <input v-model="formData.ParentAddress" class="Editdetail-span" @blur="stopEditing" />
       </div>
-    </div>
-
-    <div class="row">
       <div class="field">
         <label>สถานภาพของบิดามารดา</label>
         <input v-model="formData.PStatus" class="Editdetail-span" @blur="stopEditing" />
       </div>
+    </div>
+
+    <div class="row">
       <div class="field">
         <label>นักเรียนพักอาศัยอยู่กับใคร</label>
         <input v-model="formData.LivesWith" class="Editdetail-span" @blur="stopEditing" />
@@ -135,9 +135,6 @@
         <label>ปัจจุบันมีพี่น้องกำลังศึกษาอยู่กี่คน</label>
         <input v-model="formData.SibStudy" class="Editdetail-span" @blur="stopEditing" />
       </div>
-    </div>
-
-    <div class="row">
       <div class="field">
         <label>ประกอบอาชีพกี่คน</label>
         <input v-model="formData.EmpCount" class="Editdetail-span" @blur="stopEditing" />
@@ -146,6 +143,9 @@
         <label>ไม่ประกอบอาชีพกี่คน</label>
         <input v-model="formData.UnempCount" class="Editdetail-span" @blur="stopEditing" />
       </div>
+    </div>
+
+    <div class="row">
     </div>
   </div>
 </template>
