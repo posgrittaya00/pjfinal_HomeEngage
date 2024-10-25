@@ -4,9 +4,7 @@
     <div v-for="(section, _) in context.Sections" :key="_" class="section">
       <h3 class="section-title">{{ section.Title }}</h3>
       <div v-for="(field, index) in section.Fields" :key="field.ID" class="field">
-        <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label
-          }}
-        </div>
+        <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label }}</div>
         <div class="field-options">
           <div v-if="field.FieldType === 'radio'" class="radio-group">
             <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
@@ -38,15 +36,17 @@ const props = defineProps({
     type: Array,
     default: null,
   },
+  studentID: {
+    type: String,
+    default: null
+  },
+  term: {
+    type:String,
+    default: null
+  }
 });
 
 const localSections = ref(props.sections);
-
-// const sortSections = (sections) => {
-//   if (sections && sections.Sections) {
-//     sections.Sections.sort((a, b) => a.ID - b.ID);
-//   }
-// };
 
 const parseOptions = (options) => {
   try {
@@ -60,29 +60,31 @@ const parseOptions = (options) => {
 
 // ฟังก์ชันสำหรับส่งข้อมูลฟอร์มไปยัง backend
 const saveForm = async () => {
+  const teacherID = localStorage.getItem("username");
+  // frontend\pages\teacher\form-student\[term]\[stuid].vue
   const formData = {
-    teacherID: " ", // เปลี่ยนตามข้อมูลจริง
-    studentID: " ", // เปลี่ยนตามข้อมูลจริง
-    term: "2024 Term", // เปลี่ยนตามข้อมูลจริง
+    teacherID: teacherID , // เปลี่ยนตามข้อมูลจริง
+    studentID: props.studentID, // เปลี่ยนตามข้อมูลจริง
+    term: props.term, // เปลี่ยนตามข้อมูลจริง
     names: [
       { role: "teacher", name: "John Teacher" }, // เปลี่ยนตามข้อมูลจริง
       { role: "student", name: "Jane Student" }, // เปลี่ยนตามข้อมูลจริง
       { role: "parent", name: "John Parent" }    // เปลี่ยนตามข้อมูลจริง
     ],
     sections: (localSections.value.Sections || []).map(section => ({
-  sectionID: section.ID,
-  title: section.Title,
-  fields: (section.Fields || []).map(field => ({
-    fieldID: field.ID,
-    value: field.value
-  }))
-}))
+      sectionID: section.ID,
+      title: section.Title,
+      fields: (section.Fields || []).map(field => ({
+        fieldID: field.ID,
+        value: field.value
+      }))
+    }))
   };
 
   try {
     // ส่งข้อมูลไปยัง backend
-    const response = await axios.post('http://26.250.208.152:8081/api/form-responses/create', formData);
-    console.log('Form saved successfully:', response.data);
+    // const response = await axios.post('http://26.250.208.152:8081/api/form-responses/create', formData);
+    console.log('Form saved successfully:', formData);
     alert('บันทึกฟอร์มสำเร็จ!');
   } catch (error) {
     console.error('Failed to save form:', error);

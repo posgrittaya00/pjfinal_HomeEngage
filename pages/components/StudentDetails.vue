@@ -177,7 +177,7 @@
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Stuid from '../teacher/form-student/[stuid].vue';
+import Stuid from '../teacher/form-student/[term]/[stuid].vue';
 
 export default {
   props: {

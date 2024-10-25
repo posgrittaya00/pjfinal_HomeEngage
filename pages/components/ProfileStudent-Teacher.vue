@@ -19,16 +19,14 @@
           <td>{{ student.Name }}</td>
           <td>{{ student.StuClass }}</td>
           <td>
-            <button class="status-button" 
-                    :class="{ visited: student.firstVisit, 'not-visited': !student.firstVisit }"
-                    @click="goToFormStudent(student.StuId)">
+            <button class="status-button" :class="{ visited: student.firstVisit, 'not-visited': !student.firstVisit }"
+              @click="goToFormStudent(1, student.StuId)">
               {{ student.firstVisit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
             </button>
           </td>
           <td>
-            <button class="status-button" 
-                    :class="{ visited: student.secondVisit, 'not-visited': !student.secondVisit }"
-                    @click="goToFormStudent(student.stuId)">
+            <button class="status-button" :class="{ visited: student.secondVisit, 'not-visited': !student.secondVisit }"
+              @click="goToFormStudent(2, student.StuId)">
               {{ student.secondVisit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
             </button>
           </td>
@@ -62,11 +60,8 @@ export default {
   setup() {
     const router = useRouter();
 
-    const goToFormStudent = (StuId) => {
-      // นำทางไปยังหน้า Form-Student และส่ง studentId
-      console.log(StuId);
-      
-      router.push(`/teacher/form-student/${StuId}`);
+    const goToFormStudent = (term, StuId) => {
+      router.push(`/teacher/form-student/${term}/${StuId}`);
     };
 
     const goToInfoStudents = () => {
@@ -103,7 +98,8 @@ thead {
   border-bottom: 2px solid #ddd;
 }
 
-th, td {
+th,
+td {
   padding: 8px 12px;
   font-weight: 400;
   border-bottom: 1px solid #ddd;
@@ -122,7 +118,8 @@ td {
   color: #5B5B5B;
 }
 
-.status-button, .info-button {
+.status-button,
+.info-button {
   padding: 6px 10px;
   border: none;
   border-radius: 10px;
@@ -141,15 +138,18 @@ td {
 }
 
 .visited {
-  background-color: #76BC43; /* สีเขียว */
+  background-color: #76BC43;
+  /* สีเขียว */
 }
 
 .not-visited {
-  background-color: #EF5757; /* สีแดง */
+  background-color: #EF5757;
+  /* สีแดง */
 }
 
 .info-button {
-  background-color: #79BEFF; /* สีฟ้า */
+  background-color: #79BEFF;
+  /* สีฟ้า */
   color: white;
 }
 

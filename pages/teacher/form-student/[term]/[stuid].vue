@@ -13,7 +13,7 @@
         <div class="student-form">
           <StudentDetails :StuId="stuId" v-if="!showFormVisit" />
           <div class="form-visit" v-else>
-            <FormVisit :sections="formSections.value" v-if="Object.keys(formSections).length > 0" />
+            <FormVisit :term="term" :studentID="stuId" :sections="formSections.value" v-if="Object.keys(formSections).length > 0" />
           </div>
           <!-- ปุ่มแสดงฟอร์มเมื่อกด -->
           <div v-if="!showFormVisit" class="next-button-container">
@@ -37,6 +37,7 @@ import FormVisit from '/pages/components/FormVisit.vue'; // เพิ่มก�
 
 const route = useRoute();
 const stuId = route.params.stuid;
+const term = route.params.term;
 
 // สร้าง state เพื่อเก็บข้อมูล sections ของฟอร์ม
 const formSections = reactive({});
