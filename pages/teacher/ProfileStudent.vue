@@ -9,7 +9,7 @@
       <div class="content-area">
         <div class="info-box">
           <span class="info-text">เพิ่มข้อมูลการเยี่ยมบ้านนักเรียน</span>
-          <button class="save-button" @click="saveData">บันทึกข้อมูล</button>
+          <button class="save-button" @click="saveDataStudent">บันทึกข้อมูล</button>
           <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
         </div>
 
@@ -31,7 +31,8 @@ import axios from 'axios';
 
 const successMessage = ref('');
 
-const saveData = async () => {
+const saveDataStudent = async () => {
+
   const studentDetails = ref(null);
   try {
     studentDetails.value = await $refs.studentDetails.formData;
