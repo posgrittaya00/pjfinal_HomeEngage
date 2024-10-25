@@ -130,8 +130,6 @@ const nextPage = () => {
 </script>
 
 <style scoped>
-/* Add your styles here */
-  /* สไตล์เดิม */
   .container {
     display: flex;
     height: 128vh;

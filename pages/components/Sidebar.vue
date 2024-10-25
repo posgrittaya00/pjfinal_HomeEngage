@@ -50,6 +50,7 @@
   
 <style scoped>
   .sidebar {
+    height: auto;
   width: 280px;
   background-color: #fff;
   display: flex;

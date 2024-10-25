@@ -64,9 +64,9 @@ import Datepicker from '/pages/components/Datepicker.vue';
 
 // Function to generate random color
 const getRandomColor = () => {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
+  const r = Math.floor(Math.random() * 128); // จำกัดค่าไม่เกิน 128
+  const g = Math.floor(Math.random() * 128);
+  const b = Math.floor(Math.random() * 128);
   return `rgb(${r}, ${g}, ${b})`;
 };
 
@@ -78,6 +78,8 @@ const getLighterColor = (color) => {
   const b = Math.min(255, Math.floor(rgb[2] + (255 - rgb[2]) * 0.5)); 
   return `rgb(${r}, ${g}, ${b})`;
 };
+
+
 
 // Function to get random styles for names
 const getRandomStyles = (index) => {
@@ -166,7 +168,6 @@ const getBookingNamesForDate = (date) => {
 };
 </script>
 
-
 <style scoped>
 .calendar-container {
   width: 100%;
@@ -217,7 +218,7 @@ const getBookingNamesForDate = (date) => {
   width: 40px;
   height: 40px;
   display: flex;
-  color: #56A7F5;
+  color: #000000;
   justify-content: center;
   align-items: center;
 }
@@ -226,7 +227,7 @@ const getBookingNamesForDate = (date) => {
   font-weight: bold;
   font-size: 14px;
   padding: 6px 15px;
-  color: #56A7F5;
+  color: #000000;
   height: 40px;
   display: flex;
   align-items: center;

@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="button-group">
-        <button @click="scrollToChart('chart1')" :class="['button', 'chart1', { active: activeChart === 'chart1' }]">บริบท</button>
-        <button @click="scrollToChart('chart2')" :class="['button', 'chart2', { active: activeChart === 'chart2' }]">ครอบครัว</button>
-        <button @click="scrollToChart('chart3')" :class="['button', 'chart3', { active: activeChart === 'chart3' }]">นักเรียน</button>
-        <button @click="scrollToChart('chart4')" :class="['button', 'chart4', { active: activeChart === 'chart4' }]">ความต้องการ</button>
+        <button @click="setActiveChart('chart1')" :class="['button', 'chart1', { active: activeChart === 'chart1' }]">บริบท</button>
+        <button @click="setActiveChart('chart2')" :class="['button', 'chart2', { active: activeChart === 'chart2' }]">ครอบครัว</button>
+        <button @click="setActiveChart('chart3')" :class="['button', 'chart3', { active: activeChart === 'chart3' }]">นักเรียน</button>
+        <button @click="setActiveChart('chart4')" :class="['button', 'chart4', { active: activeChart === 'chart4' }]">ความต้องการ</button>
     </div>
 
     <!-- กราฟที่ 1 -->
-    <div id="chart1" class="chart" style="width: 100%; height: 400px;"></div>
-    <div class="summary">
+    <div v-show="activeChart === 'chart1'" id="chart1" class="chart" style="width: 100%; height: 400px;"></div>
+    <div v-show="activeChart === 'chart1'" class="summary">
       <h3>จำนวนนักเรียนทั้งหมด {{ totalStudents }} คน</h3>
       <table>
         <tr v-for="item in data1WithPercentage" :key="item.name">
@@ -22,8 +22,8 @@
     </div>
 
     <!-- กราฟที่ 2 -->
-    <div id="chart2" class="chart" style="width: 100%; height: 400px;"></div>
-    <div class="summary">
+    <div v-show="activeChart === 'chart2'" id="chart2" class="chart" style="width: 100%; height: 400px;"></div>
+    <div v-show="activeChart === 'chart2'" class="summary">
       <h3>จำนวนนักเรียนทั้งหมด {{ totalStudents }} คน</h3>
       <table>
         <tr v-for="item in data2WithPercentage" :key="item.name">
@@ -36,8 +36,8 @@
     </div>
 
     <!-- กราฟที่ 3 -->
-    <div id="chart3" class="chart" style="width: 100%; height: 400px;"></div>
-    <div class="summary">
+    <div v-show="activeChart === 'chart3'" id="chart3" class="chart" style="width: 100%; height: 400px;"></div>
+    <div v-show="activeChart === 'chart3'" class="summary">
       <h3>จำนวนนักเรียนทั้งหมด {{ totalStudents }} คน</h3>
       <table>
         <tr v-for="item in data3WithPercentage" :key="item.name">
@@ -50,8 +50,8 @@
     </div>
 
     <!-- กราฟที่ 4 -->
-    <div id="chart4" class="chart" style="width: 100%; height: 400px;"></div>
-    <div class="summary">
+    <div v-show="activeChart === 'chart4'" id="chart4" class="chart" style="width: 100%; height: 400px;"></div>
+    <div v-show="activeChart === 'chart4'" class="summary">
       <h3>จำนวนนักเรียนทั้งหมด {{ totalStudents }} คน</h3>
       <table>
         <tr v-for="item in data4WithPercentage" :key="item.name">
@@ -66,10 +66,28 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import * as echarts from 'echarts';
 
 const totalStudents = 21;
+const activeChart = ref('chart1');
+const setActiveChart = (chartId) => {
+  activeChart.value = chartId;
+  
+  // เรียก resize เมื่อเปลี่ยนแผนภูมิ
+  setTimeout(() => {
+    if (chartId === 'chart1') {
+      echarts.getInstanceByDom(document.getElementById('chart1')).resize();
+    } else if (chartId === 'chart2') {
+      echarts.getInstanceByDom(document.getElementById('chart2')).resize();
+    } else if (chartId === 'chart3') {
+      echarts.getInstanceByDom(document.getElementById('chart3')).resize();
+    } else if (chartId === 'chart4') {
+      echarts.getInstanceByDom(document.getElementById('chart4')).resize();
+    }
+  }, 100); // หน่วงเวลาเล็กน้อยเพื่อให้ DOM โหลดเสร็จก่อน
+};
+
 
 // ข้อมูลของนักเรียนในแต่ละระดับ
 const data1 = [
@@ -121,14 +139,14 @@ onMounted(() => {
         textStyle: {
           fontSize: 16,
           color: '#666',
-          fontFamily: 'Inter' // ฟอนต์ Inter
+          fontFamily: 'Inter'
         }
       },
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b}: {c} คน ({d}%)',
         textStyle: {
-          fontFamily: 'Inter' // ฟอนต์ Inter
+          fontFamily: 'Inter'
         }
       },
       legend: {
@@ -139,7 +157,7 @@ onMounted(() => {
         textStyle: {
           color: '#999',
           fontSize: 14,
-          fontFamily: 'Inter' // ฟอนต์ Inter
+          fontFamily: 'Inter'
         }
       },
       series: [
@@ -160,7 +178,7 @@ onMounted(() => {
             textStyle: {
               fontSize: 14,
               color: '#fff',
-              fontFamily: 'Inter' // ฟอนต์ Inter
+              fontFamily: 'Inter'
             }
           },
           labelLine: {
@@ -183,19 +201,8 @@ onMounted(() => {
   createChart('chart3', 'สรุปนักเรียน', ['#FFA400', '#FFAE2A', '#FFAF3E', '#FFC27E', '#FFD7AA'], data3WithPercentage);
   createChart('chart4', 'สรุปความต้องการ', ['#FF4545', '#FF5757', '#FF8784', '#FFA09D', '#FFABAB'], data4WithPercentage);
 });
-
-// กำหนดกราฟที่เปิดใช้งาน
-const activeChart = ref('chart1');
-
-// ฟังก์ชันสำหรับเลื่อนหน้าไปยังกราฟที่เลือก
-const scrollToChart = (chartId) => {
-  activeChart.value = chartId; // อัปเดตกราฟที่เปิดใช้งาน
-  const chartElement = document.getElementById(chartId);
-  if (chartElement) {
-    chartElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-};
 </script>
+
 
 <style scoped>
 .button-group {

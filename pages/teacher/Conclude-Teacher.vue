@@ -36,7 +36,7 @@ const logout = () => {
 <style scoped>
 .container {
   display: flex;
-  height: 365vh;
+  height: 122vh;
   font-family: 'Inter', sans-serif;
 }
 
