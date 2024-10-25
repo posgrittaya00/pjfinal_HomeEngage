@@ -33,10 +33,10 @@ const successMessage = ref('');
 
 const saveDataStudent = async () => {
 
-  const studentDetails = ref(null);
+  const StudentDetailsTeacher = ref(null);
   try {
-    studentDetails.value = await $refs.studentDetails.formData;
-    const response = await axios.post('http://26.250.208.152:8000/api/student', studentDetails.value);
+    StudentDetailsTeacher.value = await $refs.StudentDetailsTeacher.formData;
+    const response = await axios.post('http://26.250.208.152:8000/api/student', StudentDetailsTeacher.value);
     if (response.status === 200) {
       successMessage.value = 'บันทึกข้อมูลสำเร็จ!';
       setTimeout(() => {
