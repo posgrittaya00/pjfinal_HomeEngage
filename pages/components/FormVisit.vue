@@ -61,22 +61,22 @@ const parseOptions = (options) => {
 // ฟังก์ชันสำหรับส่งข้อมูลฟอร์มไปยัง backend
 const saveForm = async () => {
   const formData = {
-    teacherID: "64001", // เปลี่ยนตามข้อมูลจริง
-    studentID: "66790", // เปลี่ยนตามข้อมูลจริง
+    teacherID: " ", // เปลี่ยนตามข้อมูลจริง
+    studentID: " ", // เปลี่ยนตามข้อมูลจริง
     term: "2024 Term", // เปลี่ยนตามข้อมูลจริง
     names: [
       { role: "teacher", name: "John Teacher" }, // เปลี่ยนตามข้อมูลจริง
       { role: "student", name: "Jane Student" }, // เปลี่ยนตามข้อมูลจริง
       { role: "parent", name: "John Parent" }    // เปลี่ยนตามข้อมูลจริง
     ],
-    sections: localSections.value.Sections.map(section => ({
-      sectionID: section.ID,
-      title: section.Title,
-      fields: section.Fields.map(field => ({
-        fieldID: field.ID,
-        value: field.value
-      }))
-    }))
+    sections: (localSections.value.Sections || []).map(section => ({
+  sectionID: section.ID,
+  title: section.Title,
+  fields: (section.Fields || []).map(field => ({
+    fieldID: field.ID,
+    value: field.value
+  }))
+}))
   };
 
   try {
