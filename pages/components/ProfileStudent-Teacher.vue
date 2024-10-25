@@ -14,22 +14,26 @@
       </thead>
       <tbody>
         <tr v-for="(student, index) in students" :key="index">
-          <td>{{ (index + 1) + ((currentPage - 1) * studentsPerPage) }}</td>
-          <td>{{ student.StuId }}</td>
-          <td>{{ student.Name }}</td>
-          <td>{{ student.StuClass }}</td>
+          {{ console.log(student) }} 
+          <td >{{ (index + 1) + ((currentPage - 1) * studentsPerPage) }}</td>
+          <td>{{ student.stu_id }}</td>
+          <td>{{ student.name }}</td>
+          <td>{{ student.stu_class }}</td>
           <td>
-            <button class="status-button" :class="{ visited: student.firstVisit, 'not-visited': !student.firstVisit }"
-              @click="goToFormStudent(1, student.StuId)">
-              {{ student.firstVisit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
-            </button>
-          </td>
-          <td>
-            <button class="status-button" :class="{ visited: student.secondVisit, 'not-visited': !student.secondVisit }"
-              @click="goToFormStudent(2, student.StuId)">
-              {{ student.secondVisit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
-            </button>
-          </td>
+  <button class="status-button" 
+  :class="{ visited: student.first_visit, 'not-visited': !student.first_visit }"
+  @click="goToFormStudent(1, student.stu_id)">
+    {{ student.first_visit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
+  </button>
+</td>
+<td>
+  <button class="status-button" 
+  :class="{ visited: student.second_visit, 'not-visited': !student.second_visit }"
+  @click="goToFormStudent(2, student.stu_id)">
+    {{ student.second_visit ? 'เยี่ยมแล้ว' : 'ยังไม่ได้เยี่ยม' }}
+  </button>
+</td>
+
           <td>
             <button @click="goToInfoStudents" class="info-button">ข้อมูลนักเรียน</button>
           </td>
@@ -41,6 +45,7 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
   props: {
@@ -65,15 +70,17 @@ export default {
     };
 
     const goToInfoStudents = () => {
-      router.push('/teacher/Info-Students'); // นำทางไปยังเส้นทางที่ต้องการ
+      router.push('/teacher/Info-Students');
     };
-
+    const logcheck = (st) => {
+      console.log(st)
+    }
     return {
       goToInfoStudents,
       goToFormStudent,
     };
   },
-};
+}
 </script>
 
 <style scoped>

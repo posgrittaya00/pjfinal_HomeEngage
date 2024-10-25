@@ -97,16 +97,22 @@ const searchQuery = ref("");
 ]);
 
 const filteredStudents = computed(() => {
-  const filtered = students.value.filter(student =>
-    student.Name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  const query = searchQuery.value.toLowerCase();
+  const filtered = students.value.filter(student => 
+    (student.Name || '').toLowerCase().includes(query) ||
+    (student.StuId || '').toLowerCase().includes(query) ||
+    (student.StuClass || '').toLowerCase().includes(query) // เพิ่มเงื่อนไขสำหรับ StuClass
   );
   const start = (currentPage.value - 1) * studentsPerPage;
   return filtered.slice(start, start + studentsPerPage);
 });
 
 const totalPages = computed(() => {
-  const filtered = students.value.filter(student =>
-    student.Name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  const query = searchQuery.value.toLowerCase();
+  const filtered = students.value.filter(student => 
+    (student.Name || '').toLowerCase().includes(query) ||
+    (student.StuId || '').toLowerCase().includes(query) ||
+    student.StuClass.toLowerCase().includes(query) // เพิ่มเงื่อนไขสำหรับ StuClass
   );
   return Math.ceil(filtered.length / studentsPerPage);
 });

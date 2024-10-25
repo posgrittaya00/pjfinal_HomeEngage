@@ -11,18 +11,11 @@
           <span class="info-text">ข้อมูลการเยี่ยมบ้านนักเรียน</span>
         </div>
         <div class="student-form">
-          <StudentDetails :StuId="stuId" v-if="!showFormVisit" />
-          <div class="form-visit" v-else>
-            <FormVisit :term="term" :studentID="stuId" :sections="formSections.value" v-if="Object.keys(formSections).length > 0" />
-          </div>
-          <!-- ปุ่มแสดงฟอร์มเมื่อกด -->
-          <div v-if="!showFormVisit" class="next-button-container">
-            <button class="next-button" @click="goToFormVisit">ต่อไป</button>
+          <div class="form-visit" v-if="Object.keys(formSections).length > 0">
+            <FormVisit :term="term" :studentID="stuId" :sections="formSections.value" />
           </div>
         </div>
       </div>
-
-
     </div>
   </div>
 </template>
@@ -32,18 +25,15 @@ import { ref, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
-import StudentDetails from '/pages/components/StudentDetails.vue';
-import FormVisit from '/pages/components/FormVisit.vue'; // เพิ่มการนำเข้า FormVisit
+import FormVisit from '/pages/components/FormVisit.vue';
 
 const route = useRoute();
 const stuId = route.params.stuid;
 const term = route.params.term;
 
-// สร้าง state เพื่อเก็บข้อมูล sections ของฟอร์ม
 const formSections = reactive({});
-const showFormVisit = ref(false); // สร้างตัวแปรเพื่อควบคุมการแสดงฟอร์ม
+const showFormVisit = ref(true); // ตั้งค่าให้ formVisit แสดงทันที
 
-// ฟังก์ชันดึงข้อมูล sections ของฟอร์ม
 const fetchFormSections = async () => {
   try {
     const response = await axios.get(`http://26.250.208.152:8000/api/forms/`);
@@ -54,16 +44,7 @@ const fetchFormSections = async () => {
   }
 };
 
-// ฟังก์ชันสำหรับการกดปุ่ม "ต่อไป" และดึงข้อมูลฟอร์ม
-const goToFormVisit = async () => {
-  try {
-    await fetchFormSections(); // ดึงข้อมูลฟอร์มหลังจากกดปุ่ม
-    showFormVisit.value = true; // แสดงฟอร์ม
-  } catch (error) {
-    console.error(error)
-  }
-};
-
+fetchFormSections(); // ดึงข้อมูลฟอร์มทันที
 </script>
 
 <style scoped>
