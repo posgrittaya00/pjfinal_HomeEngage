@@ -80,22 +80,45 @@ const parseOptions = (options) => {
 // Include ratings in the form data when saving
 const saveForm = async () => {
   const teacherID = localStorage.getItem("username");
+  // const formData = {
+  //   teacherID: teacherID,
+  //   studentID: props.studentID,
+  //   term: props.term,
+  //   names: [
+  //     { role: "teacher", name: "John Teacher" },
+  //     { role: "student", name: "Jane Student" },
+  //     { role: "parent", name: "John Parent" }
+  //   ],
+  //   sections: localSections.value.map(ctx => ({
+  //     sectionID: ctx.ID,
+  //     title: ctx.Name,
+  //     fields: ctx.Sections.map(field => ({
+  //       fieldID: field.ID,
+  //       value: field.value,
+  //       rating: ratings.value[field.ID] || null
+  //     }))
+  //   }))
+  // };
+
   const formData = {
-    teacherID: teacherID,
-    studentID: props.studentID,
+    teacher_id: teacherID,
+    student_id: props.studentID,
     term: props.term,
     names: [
       { role: "teacher", name: "John Teacher" },
       { role: "student", name: "Jane Student" },
       { role: "parent", name: "John Parent" }
     ],
-    sections: localSections.value.map(ctx => ({
-      sectionID: ctx.ID,
-      title: ctx.Name,
-      fields: ctx.Sections.map(field => ({
-        fieldID: field.ID,
-        value: field.value,
-        rating: ratings.value[field.ID] || null
+    sections: localSections.value.map(context => ({
+      context_id: context.ID,          // ID of the context (e.g., Family, Student)
+      sections: (context.Sections || []).map(section => ({
+        section_id: section.ID,         // Section ID
+        title: section.Title,           // Section Title
+        fields: (section.Fields || []).map(field => ({
+          field_id: field.ID,           // Unique Field ID
+          value: field.value || "",      // User input value, default to empty if not set
+          score: ratings.value[field.ID] || 1 // User rating, default to 1 if not set
+        }))
       }))
     }))
   };
