@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <SidebarTeacher />
-    
+
     <div class="main-content">
       <div class="header">
         <h1>HOME ENGAGE</h1>
@@ -18,14 +18,15 @@
           <input
             type="text"
             v-model="searchQuery"
-            placeholder="Search"
+            placeholder="ค้นหา"
             class="search-input"
+            @input="updateFilteredStudents"
           />
         </div>
 
-        <!-- Show student list -->
+        <!-- แสดงรายชื่อนักเรียน -->
         <ProfileStudentTeacher
-          :students="filteredStudents"
+          :students="paginatedStudents"
           :currentPage="currentPage"
           :studentsPerPage="studentsPerPage"
         />
@@ -47,77 +48,65 @@
 import ProfileStudentTeacher from '../components/ProfileStudent-Teacher.vue';
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import Pagination from '../components/Pagination.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 
 const isLoading = ref(true);
-    const hasError = ref(false);
-    const errorMessage = ref('');
-
-    onMounted(async () => {
-      try {
-        const username = localStorage.getItem('username');
-
-        if (username) {
-          const response = await axios.get(`http://26.250.208.152:8000/api/teacher/students/${username}`);
-          
-          if (response && response.data) {
-            students.value = response.data;  // Assign the fetched data
-              // Emit the data to parent
-          } else {
-            throw new Error("Invalid student data");
-          }
-        } else {
-          throw new Error("No username found in localStorage");
-        }
-      } catch (error) {
-        console.error("Error fetching student data:", error.message);
-        hasError.value = true;
-        errorMessage.value = error.message || "An error occurred while fetching student data.";
-      } finally {
-        isLoading.value = false;
-      }
-    });
-
-    // return {
-    //   // formData,
-    //   isLoading,
-    //   hasError,
-    //   errorMessage,
-    // };
-
+const hasError = ref(false);
+const errorMessage = ref('');
+const students = ref([]);
+const filteredStudents = ref([]);
+const searchQuery = ref("");
 const studentsPerPage = 10;
 const currentPage = ref(1);
-const searchQuery = ref("");
 
-  // ข้อมูลนักเรียนทั้งหมด
-  const students = ref([
- 
+onMounted(async () => {
+  try {
+    const username = localStorage.getItem('username');
+    const response = await axios.get(`http://26.250.208.152:8000/api/teacher/students/${username}`);
+    students.value = response.data;
+    filteredStudents.value = students.value;  // กำหนดค่าเริ่มต้นให้กับ filteredStudents
+    console.log("Initial Students Data:", students.value); // ตรวจสอบข้อมูลนักเรียนที่ได้รับ
+  } catch (error) {
+    console.error("Error fetching student data:", error.message);
+    hasError.value = true;
+    errorMessage.value = error.message || "เกิดข้อผิดพลาดในการดึงข้อมูลนักเรียน";
+  } finally {
+    isLoading.value = false;
+  }
+});
 
-]);
-
-const filteredStudents = computed(() => {
+// ฟังก์ชันสำหรับกรองนักเรียน
+const updateFilteredStudents = () => {
+  currentPage.value = 1;
   const query = searchQuery.value.toLowerCase();
-  const filtered = students.value.filter(student => 
-    (student.Name || '').toLowerCase().includes(query) ||
-    (student.StuId || '').toLowerCase().includes(query) ||
-    (student.StuClass || '').toLowerCase().includes(query) // เพิ่มเงื่อนไขสำหรับ StuClass
-  );
+
+  filteredStudents.value = students.value.filter(student => {
+    // ตรวจสอบว่า student มีฟิลด์ที่ต้องการทั้งหมด
+    const stuId = student.stu_id ? student.stu_id.toString().toLowerCase() : "";
+    const name = student.name ? student.name.toLowerCase() : "";
+    const stuClass = student.stu_class ? student.stu_class.toLowerCase() : "";
+
+    // ทำการกรองโดยใช้ฟิลด์ที่แปลงค่าไว้
+    return stuId.includes(query) || name.includes(query) || stuClass.includes(query);
+  });
+
+  console.log("Filtered Students after search:", filteredStudents.value); // Log ผลลัพธ์การกรอง
+};
+
+// คำนวณรายชื่อนักเรียนที่อยู่ในหน้านั้นๆ
+const paginatedStudents = computed(() => {
   const start = (currentPage.value - 1) * studentsPerPage;
-  return filtered.slice(start, start + studentsPerPage);
+  const end = start + studentsPerPage;
+  return filteredStudents.value.slice(start, end);
 });
 
+// คำนวณจำนวนหน้าทั้งหมด
 const totalPages = computed(() => {
-  const query = searchQuery.value.toLowerCase();
-  const filtered = students.value.filter(student => 
-    (student.Name || '').toLowerCase().includes(query) ||
-    (student.StuId || '').toLowerCase().includes(query) ||
-    student.StuClass.toLowerCase().includes(query) // เพิ่มเงื่อนไขสำหรับ StuClass
-  );
-  return Math.ceil(filtered.length / studentsPerPage);
+  return Math.ceil(filteredStudents.value.length / studentsPerPage);
 });
 
-// Function to set the page
+// ฟังก์ชันสำหรับจัดการการเปลี่ยนหน้า
 const setPage = (page) => {
   currentPage.value = page;
 };
@@ -167,15 +156,15 @@ const nextPage = () => {
   }
 
   .content-area {
-    position: relative; /* ตั้งตำแหน่ง relative เพื่อให้ absolute ด้านในอ้างอิง */
+    position: relative;
     display: flex;
-    flex-direction: column;  /* จัดเรียงแนวตั้ง */
+    flex-direction: column;  
     flex: 1;
     background-color: #F9F9F9;
     margin: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding-bottom: 60px; /* เพิ่มระยะห่างจากขอบล่าง */
+    padding-bottom: 60px; 
   }
 
   .info-box {
@@ -227,7 +216,6 @@ const nextPage = () => {
     color: #b0b0b0;
   }
 
-  /* ปรับตำแหน่ง Pagination ให้ชิดขอบล่าง */
   .pagination {
     position: absolute;
     bottom: 0;
@@ -236,7 +224,7 @@ const nextPage = () => {
     display: flex;
     justify-content: center;
     padding: 10px 0;
-    background-color: #F9F9F9; /* เพื่อให้ดูชัดเจนเมื่อชิดขอบล่าง */
-    margin-bottom: 10px; /* เพิ่มระยะห่างระหว่างตารางและ Pagination */
+    background-color: #F9F9F9; 
+    margin-bottom: 10px; 
   }
 </style>

@@ -19,7 +19,6 @@
         </div>
         <div class="button-container">
           <div class="button-group">
-            <button class="toggle-button" :class="{ active: isActive === 'info' }" @click="goToProfile">ข้อมูล</button>
             <button class="toggle-button" :class="{ active: isActive === 'map' }" @click="goToMap">แผนที่บ้าน</button>
           </div>
         </div>
@@ -32,27 +31,41 @@
 <script setup>
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import StudentDetails from '/pages/components/StudentDetails.vue';
-import { useRoute } from 'vue-router';
-import { ref } from 'vue';
-const route = useRoute()
+import { useRoute, useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-const stuId = route.params.stuid;
+const route = useRoute();
 const router = useRouter();
+const stuId = route.params.stuid; // รับค่า stuId จาก route params
 const isActive = ref('info');
+const mapUrl = ref(''); // สร้าง ref สำหรับ mapUrl
+
+// ฟังก์ชันเพื่อดึงข้อมูลนักเรียน รวมถึง map_url จากฐานข้อมูล
+const fetchStudentData = async () => {
+  try {
+    const response = await axios.get(`http://26.250.208.152:8000/api/student/${stuId}`);
+    mapUrl.value = response.data.map_url; // บันทึก map_url ลงใน ref
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', error);
+  }
+};
+
+// เรียกฟังก์ชันเมื่อ component ถูก mount
+onMounted(() => {
+  fetchStudentData();
+});
 
 const goToMap = () => {
   isActive.value = 'map';
-  router.push('/teacher/Mapstudents').catch(() => {}); // เพิ่มการจับข้อผิดพลาด
+  if (mapUrl.value) {
+    window.open(mapUrl.value, '_blank');
+  } else {
+    console.warn('ไม่พบ URL ของแผนที่');
+  }
 };
-
-const goToProfile = () => {
-  isActive.value = 'info';
-  router.push('/teacher/Info-students').catch(() => {}); // เพิ่มการจับข้อผิดพลาด
-};
-
-
 </script>
-  
+
 <style scoped>
   .container {
     display: flex;
@@ -122,7 +135,7 @@ const goToProfile = () => {
   }
 
   .back:hover {
-        background-color: #72b6f6; /* Hover effect color */
+        background-color: #5bacf8; /* Hover effect color */
   }
   .button-container {
     display: flex;
@@ -132,39 +145,46 @@ const goToProfile = () => {
     width: 100%; /* ให้คอนเทนเนอร์ครอบคลุมความกว้างเต็ม */
   }
 
+  .button-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: flex-start; /* Align to the top */
+  padding-top: 20px; /* Spacing from the top */
+  width: 100%; /* Full width */
+}
+
 .button-group {
   display: flex;
-  gap: 30px; /* ระยะห่างระหว่างปุ่ม */
+  gap: 30px; /* Spacing between buttons */
 }
 
 .toggle-button {
-  text-decoration: none;
   display: inline-block;
   width: 120px;
   height: 40px;
-  line-height: 40px; /* จัดข้อความให้อยู่กลางแนวตั้ง */
+  line-height: 40px; /* Center text vertically */
   border: none;
-  border-radius: 15px;
+  border-radius: 15px; /* Rounded corners */
   font-size: 18px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
   outline: none;
   color: #56A7F5;
   background-color: #ECECEC;
-  text-align: center; /* จัดข้อความให้อยู่กลางแนวนอน */
+  text-align: center; /* Center text horizontally */
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .toggle-button.active {
   background-color: #56A7F5;
   color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* More pronounced shadow for active */
 }
 
 .toggle-button:hover {
-  opacity: 0.9;
+  background-color: #5bacf8; /* Light gray */
+  color: white; /* Blue text */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
 }
 
-.toggle-button:not(.active) {
-  background-color: #ECECEC; /* สีเทาเมื่อไม่ได้เลือก */
-  color: #56A7F5; /* ตัวหนังสือสีฟ้า */
-}
 </style>  

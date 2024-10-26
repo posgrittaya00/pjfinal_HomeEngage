@@ -66,9 +66,9 @@ export default {
       const pages = [];
       const maxVisiblePages = 1; // จำนวนหน้าที่จะแสดง
 
-      if (this.currentPage <= 2) {
+      if (this.currentPage <= 1) {
         // ถ้าอยู่ที่หน้า 1 หรือ 2 ให้แสดงหมายเลขหน้า 2, 3
-        for (let i = 2; i <= Math.min(this.totalPages, maxVisiblePages + 1); i++) {
+        for (let i = 3; i <= Math.min(this.totalPages, maxVisiblePages + 1); i++) {
           pages.push(i);
         }
       } else if (this.currentPage >= this.totalPages - 1) {

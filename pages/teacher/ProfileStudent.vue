@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import StudentDetailsTeacher from '../../../components/StudentDetails-Teacher.vue';
+import StudentDetailsTeacher from '../components/StudentDetails-Teacher.vue';
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import { ref } from 'vue';
 import axios from 'axios';

@@ -60,7 +60,7 @@ export default {
     async login() {
       try {
         // ส่งข้อมูลการเข้าสู่ระบบไปที่ backend
-        const response = await axios.post(`http://localhost:8000/api/${this.userType}/login`, {
+        const response = await axios.post(`http://26.250.208.152:8000/api/${this.userType}/login`, {
           username: this.username,
           password: this.password,
         });

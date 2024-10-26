@@ -221,7 +221,8 @@ export default {
       FamCount: "",
       SibStudy: "",
       EmpCount: "",
-      UnempCount: ""
+      UnempCount: "",
+      map_url: ""
     });
 
     const isLoading = ref(true);
