@@ -8,8 +8,8 @@
         <div class="field-options">
           <div v-if="field.FieldType === 'radio'" class="radio-group">
             <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
-              <input type="radio" :name="field.ID" :value="option" v-model="field.value" class="radio-input" />
-              <label class="radio-label">{{ option }}</label>
+              <label class="radio-label"><input type="radio" :name="field.ID" :value="option" v-model="field.value"
+                  class="radio-input" />{{ option }}</label>
             </div>
           </div>
           <input v-if="field.FieldType === 'textarea'" v-model="field.value" class="input-text" />
@@ -41,7 +41,7 @@ const props = defineProps({
     default: null
   },
   term: {
-    type:String,
+    type: String,
     default: null
   }
 });
@@ -61,9 +61,8 @@ const parseOptions = (options) => {
 // ฟังก์ชันสำหรับส่งข้อมูลฟอร์มไปยัง backend
 const saveForm = async () => {
   const teacherID = localStorage.getItem("username");
-  // frontend\pages\teacher\form-student\[term]\[stuid].vue
   const formData = {
-    teacherID: teacherID , // เปลี่ยนตามข้อมูลจริง
+    teacherID: teacherID, // เปลี่ยนตามข้อมูลจริง
     studentID: props.studentID, // เปลี่ยนตามข้อมูลจริง
     term: props.term, // เปลี่ยนตามข้อมูลจริง
     names: [
@@ -261,10 +260,9 @@ onMounted(() => {
 }
 
 .radio-label {
-  font-size: 14px;
-  /* ขนาดฟอนต์สำหรับ label */
-  line-height: 20px;
-  /* ปรับความสูงของบรรทัดให้เหมาะสม */
+  font-size: 16px;
+  display: flex;
+  align-items: flex-end;
 }
 
 .button-container {
