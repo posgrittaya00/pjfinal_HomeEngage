@@ -105,54 +105,37 @@ const saveForm = async () => {
     student_id: props.studentID,
     term: props.term,
     names: [
-      { role: "teacher", name: "John Teacher" },
-      { role: "student", name: "Jane Student" },
+      // { role: "teacher", name: "John Teacher" },
+      // { role: "student", name: "Jane Student" },
       { role: "parent", name: "John Parent" }
     ],
     sections: localSections.value.map(context => ({
-      context_id: context.ID,          // ID of the context (e.g., Family, Student)
-      sections: (context.Sections || []).map(section => ({
-        section_id: section.ID,         // Section ID
-        title: section.Title,           // Section Title
-        fields: (section.Fields || []).map(field => ({
-          field_id: field.ID,           // Unique Field ID
-          value: field.value || "",      // User input value, default to empty if not set
-          score: ratings.value[field.ID] || 1 // User rating, default to 1 if not set
+      section_id: context.ID,  // ใช้ section_id เพื่อให้ตรงกับโครงสร้างใน Go
+      title: context.Name,
+      fields: (context.Sections || []).flatMap(section => 
+        (section.Fields || []).map(field => ({
+          field_id: field.ID,
+          value: field.value || "",  // กำหนดค่าเป็นสตริงว่างถ้าไม่มีค่า
+          score: ratings.value[field.ID] || 1  // กำหนดคะแนนเป็น 1 ถ้าไม่ถูกตั้งค่า
         }))
-      }))
+      )
     }))
   };
 
   try {
-    console.log('Form saved successfully:', formData);
-    // alert('บันทึกฟอร์มสำเร็จ!');
+    const response = await axios.post('http://localhost:8081/api/form-responses/create', formData);
+    if (response.data) {
+      console.log('บันทึกฟอร์มสำเร็จ:', formData);
+      alert('บันทึกฟอร์มสำเร็จ!');
+    } else {
+      console.log('ไม่สามารถบันทึกฟอร์มได้:', response.data.message);
+      alert('บันทึกฟอร์มไม่สำเร็จ');
+    }
   } catch (error) {
-    console.error('Failed to save form:', error);
+    console.error('ไม่สามารถบันทึกฟอร์มได้:', error);
     alert('บันทึกฟอร์มไม่สำเร็จ');
   }
 };
-
-// Watch for updates to sections prop and set up initial ratings if needed
-watch(() => props.sections, (newSections) => {
-  if (newSections) {
-    localSections.value = newSections;
-  }
-});
-
-onMounted(() => {
-  if (localSections.value) {
-    // Initialize ratings for each field if not already set
-    localSections.value.forEach(context => {
-      context.Sections.forEach(section => {
-        section.Fields.forEach(field => {
-          if (ratings.value[field.ID] === undefined) {
-            ratings.value[field.ID] = null; // Default to null
-          }
-        });
-      });
-    });
-  }
-});
 </script>
 
 
