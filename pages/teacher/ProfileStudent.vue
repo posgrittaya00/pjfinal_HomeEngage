@@ -55,7 +55,7 @@ const saveData = async () => {
 <style scoped>
 .container {
   display: flex;
-  min-height: 100vh; /* ทำให้ container ครอบคลุมความสูงของหน้าจอ */
+  height: 100vh;
 }
 
 .main-content {
@@ -71,7 +71,7 @@ const saveData = async () => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  height: 60px; /* ลดความสูงของ header */
+  height: 60px;
 }
 
 .header h1 {
@@ -88,7 +88,8 @@ const saveData = async () => {
   margin: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding-bottom: 0; /* ปรับให้ไม่มี padding ด้านล่าง */
+  height: auto;
+  overflow: hidden;
 }
 
 .info-box {
@@ -101,12 +102,7 @@ const saveData = async () => {
   font-size: 18px;
   color: #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
-}
-
-.student-details {
-  margin: 0; /* ปรับให้ไม่มี margin */
-  padding: 0; /* ลด padding ถ้ามี */
+  margin-bottom: 20px;
 }
 
 .save-button {
