@@ -1,15 +1,32 @@
 <template>
-  <div v-if="localSections" v-for="(context, _) in localSections" :key="_" class="section">
+  <div v-if="localSections" v-for="(context, contextIndex) in localSections" :key="contextIndex" class="section">
     <h3 class="main-section">{{ context.Name }}</h3>
-    <div v-for="(section, _) in context.Sections" :key="_" class="section">
+    <div v-for="(section, sectionIndex) in context.Sections" :key="sectionIndex" class="section">
       <h3 class="section-title">{{ section.Title }}</h3>
-      <div v-for="(field, index) in section.Fields" :key="field.ID" class="field">
-        <div class="field-label" v-if="!section.HasOptionsOnly">{{ `${_ + 1}.${index + 1}` }} {{ field.Label }}</div>
+      <div v-for="(field, fieldIndex) in section.Fields" :key="field.ID" class="field">
+        <div class="label-section">
+          <div class="field-label" v-if="!section.HasOptionsOnly">
+            {{ `${contextIndex + 1}.${fieldIndex + 1}` }} {{ field.Label }}
+          </div>
+
+          <div class="rating">
+            <label v-for="point in 5" :key="point"
+              :class="['rating-label', { 'selected': ratings[field.ID] === point }]">
+              <input type="radio" :name="`rating-${field.ID}`" :value="point" v-model="ratings[field.ID]"
+                class="rating-input" />
+              <span class="rating-number">{{ point }}</span>
+            </label>
+          </div>
+        </div>
+
         <div class="field-options">
+          <!-- Existing Radio Group for other options -->
           <div v-if="field.FieldType === 'radio'" class="radio-group">
             <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
-              <label class="radio-label"><input type="radio" :name="field.ID" :value="option" v-model="field.value"
-                  class="radio-input" />{{ option }}</label>
+              <label class="radio-label">
+                <input type="radio" :name="field.ID" :value="option" class="radio-input" v-model="field.value" />
+                {{ option }}
+              </label>
             </div>
           </div>
           <input v-if="field.FieldType === 'textarea'" v-model="field.value" class="input-text" />
@@ -24,7 +41,6 @@
   <div class="button-container">
     <button @click="saveForm" class="save-button">บันทึก</button>
   </div>
-
 </template>
 
 <script setup>
@@ -48,6 +64,9 @@ const props = defineProps({
 
 const localSections = ref(props.sections);
 
+// Initialize ratings object to store ratings by field ID
+const ratings = ref({});
+
 const parseOptions = (options) => {
   try {
     const sanitizedOptions = options.replace(/\n/g, '').trim();
@@ -58,39 +77,39 @@ const parseOptions = (options) => {
   }
 };
 
-// ฟังก์ชันสำหรับส่งข้อมูลฟอร์มไปยัง backend
+// Include ratings in the form data when saving
 const saveForm = async () => {
   const teacherID = localStorage.getItem("username");
   const formData = {
-    teacherID: teacherID, // เปลี่ยนตามข้อมูลจริง
-    studentID: props.studentID, // เปลี่ยนตามข้อมูลจริง
-    term: props.term, // เปลี่ยนตามข้อมูลจริง
+    teacherID: teacherID,
+    studentID: props.studentID,
+    term: props.term,
     names: [
-      { role: "teacher", name: "John Teacher" }, // เปลี่ยนตามข้อมูลจริง
-      { role: "student", name: "Jane Student" }, // เปลี่ยนตามข้อมูลจริง
-      { role: "parent", name: "John Parent" }    // เปลี่ยนตามข้อมูลจริง
+      { role: "teacher", name: "John Teacher" },
+      { role: "student", name: "Jane Student" },
+      { role: "parent", name: "John Parent" }
     ],
-    sections: (localSections.value.Sections || []).map(section => ({
-      sectionID: section.ID,
-      title: section.Title,
-      fields: (section.Fields || []).map(field => ({
+    sections: localSections.value.map(ctx => ({
+      sectionID: ctx.ID,
+      title: ctx.Name,
+      fields: ctx.Sections.map(field => ({
         fieldID: field.ID,
-        value: field.value
+        value: field.value,
+        rating: ratings.value[field.ID] || null
       }))
     }))
   };
 
   try {
-    // ส่งข้อมูลไปยัง backend
-    // const response = await axios.post('http://26.250.208.152:8081/api/form-responses/create', formData);
     console.log('Form saved successfully:', formData);
-    alert('บันทึกฟอร์มสำเร็จ!');
+    // alert('บันทึกฟอร์มสำเร็จ!');
   } catch (error) {
     console.error('Failed to save form:', error);
     alert('บันทึกฟอร์มไม่สำเร็จ');
   }
 };
 
+// Watch for updates to sections prop and set up initial ratings if needed
 watch(() => props.sections, (newSections) => {
   if (newSections) {
     localSections.value = newSections;
@@ -99,94 +118,128 @@ watch(() => props.sections, (newSections) => {
 
 onMounted(() => {
   if (localSections.value) {
-    // sortSections(localSections.value); // Sort by ID
+    // Initialize ratings for each field if not already set
+    localSections.value.forEach(context => {
+      context.Sections.forEach(section => {
+        section.Fields.forEach(field => {
+          if (ratings.value[field.ID] === undefined) {
+            ratings.value[field.ID] = null; // Default to null
+          }
+        });
+      });
+    });
   }
-
 });
 </script>
 
+
 <style scoped>
-.main-section {
-  background-color: #b695f3;
-  /* พื้นหลังสีฟ้าน้ำเงินอ่อน */
-  color: #ffffff;
-  /* สีข้อความ */
-  padding: 5px 10px;
-  /* เพิ่มระยะห่างภายใน */
-  border-radius: 3px;
-  /* ทำมุมให้มน */
-  font-size: 18px;
-  /* ขนาดฟอนต์ */
-  display: inline-block;
-  /* ให้เป็นบล็อกในแนวนอน */
-  margin-bottom: 5px;
-  /* เพิ่มระยะห่างด้านล่าง */
-  margin-left: 15px;
-  /* ขยับไปทางซ้าย 20px */
+.rating {
+  display: flex;
+  gap: 10px;
 }
 
+.rating-number {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.rating-input {
+  display: none;
+  /* Hide the actual radio input */
+}
+
+.rating-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #333;
+  border-radius: 50%;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.rating-number {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.rating-input {
+  display: none;
+}
+
+.rating-label:hover {
+  background-color: #ddddf3;
+  color: #333;
+}
+
+.selected {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+.label-section {
+  display: flex;
+  justify-content: space-between;
+  max-width: 50vw;
+  width: 100%;
+}
+
+.main-section {
+  background-color: #b695f3;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 18px;
+  display: inline-block;
+  margin-bottom: 5px;
+  margin-left: 15px;
+}
 
 .main-title {
   font-size: 20px;
-  /* ขนาดฟอนต์ */
   margin-bottom: 20px;
   max-width: 600px;
-  /* กำหนดความกว้างสูงสุด */
   width: fit-content;
-  /* ใช้ขนาดเนื้อหา */
   margin-left: 15px;
-  /* ขยับไปทางซ้าย 20px */
 }
-
 
 .section {
   margin-bottom: 15px;
   margin-left: 15px;
-  /* ขยับไปทางซ้าย 20px */
 }
 
 .section-title {
   background-color: #e0eefb;
-  /* พื้นหลังสีฟ้าน้ำเงินอ่อน */
   color: #56A7F5;
-  /* สีข้อความ */
   padding: 5px 10px;
-  /* เพิ่มระยะห่างภายใน */
   border-radius: 5px;
-  /* ทำมุมให้มน */
   font-size: 16px;
-  /* ขนาดฟอนต์ */
   display: inline-block;
-  /* ให้เป็นบล็อกในแนวนอน */
   margin-bottom: 5px;
-  /* เพิ่มระยะห่างด้านล่าง */
   margin-left: 15px;
-  /* ขยับไปทางซ้าย 20px */
 }
 
 .field {
   margin: 10px;
   margin-left: 15px;
-  /* ขยับไปทางซ้าย 20px */
 }
 
 .field-label {
   font-size: 16px;
-  /* ขนาดฟอนต์ */
   display: inline-block;
-  /* ให้เป็นบล็อกในแนวนอน */
   margin-bottom: 10px;
-  /* เพิ่มระยะห่างด้านล่าง */
   margin-left: 10px;
-  /* ขยับไปทางซ้าย 20px */
 }
 
 .field-options {
   display: flex;
   flex-wrap: wrap;
-  /* ให้ตัวเลือกสามารถลงไปได้เมื่อพื้นที่ไม่พอ */
   margin-left: 15px;
-  /* ขยับไปทางซ้าย 20px */
 }
 
 .input-text {
@@ -199,76 +252,66 @@ onMounted(() => {
 .radio-group {
   display: flex;
   flex-wrap: wrap;
-  /* ทำให้ radio options เรียงตามแนวนอน */
 }
 
 .radio-option {
   display: flex;
-  /* ใช้ flex เพื่อจัดตำแหน่ง */
   align-items: center;
-  /* จัดตำแหน่งให้อยู่กลางแนวตั้ง */
   margin-right: 15px;
-  /* เพิ่มระยะห่างระหว่าง radio options */
   margin-bottom: 12px;
-  /* เพิ่มระยะห่างระหว่าง radio options แต่ละตัว */
 }
 
 .radio-input {
   margin-right: 5px;
-  /* เพิ่มระยะห่างระหว่างปุ่ม radio กับข้อความ */
   width: 16px;
-  /* ขยายขนาด radio button */
   height: 16px;
-  /* ขยายขนาด radio button */
   appearance: none;
-  /* ลบรูปแบบเริ่มต้นของ radio button */
   background-color: transparent;
-  /* ไม่มีพื้นหลัง */
   border: 1px solid #ccc;
-  /* ขอบเป็นสีเทาเมื่อไม่ถูกเลือก */
   border-radius: 50%;
-  /* ทำให้เป็นวงกลม */
   outline: none;
-  /* ลบกรอบเมื่อมีการเลือก */
   cursor: pointer;
-  /* แสดงว่าปุ่มคลิกได้ */
   position: relative;
-  /* เพื่อจัดการกับ pseudo-element */
 }
 
-/* เมื่อปุ่ม radio ถูกเลือก */
 .radio-input:checked {
   background-color: white;
-  /* พื้นหลังยังคงเป็นสีขาวเมื่อถูกเลือก */
   border: 1px solid #56A7F5;
-  /* ขอบเป็นสีฟ้าเมื่อถูกเลือก */
 }
 
-/* วงกลมตรงกลางของปุ่มเมื่อถูกเลือก */
 .radio-input:checked::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   width: 12px;
-  /* ขนาดวงกลมภายใน */
   height: 12px;
   background-color: #56A7F5;
-  /* สีฟ้าตรงกลางเมื่อถูกเลือก */
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
 
 .radio-label {
+  --bordersize: 10px;
+  cursor: pointer;
   font-size: 16px;
+  padding: 0.25rem;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
+  border-radius: var(--bordersize);
+  transition: background-color 0.3s ease;
 }
+
+.radio-label:hover {
+  background-color: #ddddf3;
+  border-radius: calc(var(--bordersize * 0.2));
+}
+
+
 
 .button-container {
   display: flex;
   justify-content: center;
-  /* จัดให้ปุ่มอยู่ตรงกลางแนวนอน */
   margin-top: 20px;
 }
 
