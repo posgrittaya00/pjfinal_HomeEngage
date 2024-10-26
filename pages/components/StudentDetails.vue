@@ -10,162 +10,162 @@
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล</label>
-                        <span class="detail-span">{{ formData.Name }}</span>
+                        <span class="detail-span">{{ formData.name }}</span>
                     </div>
                     <div class="field">
                         <label>ชื่อเล่น</label>
-                        <span class="detail-span">{{ formData.Nickname }}</span>
+                        <span class="detail-span">{{ formData.nickname }}</span>
                     </div>
                     <div class="field">
                         <label>รหัสประจำตัว</label>
-                        <span class="detail-span">{{ formData.StuId }}</span>
+                        <span class="detail-span">{{ formData.stu_id }}</span>
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span">{{ formData.StuPhone }}</span>
+                        <span class="detail-span">{{ formData.stu_phone }}</span>
                     </div>
                     <div class="field">
                         <label>ระดับชั้น</label>
-                        <span class="detail-span">{{ formData.StuClass }}</span>
+                        <span class="detail-span">{{ formData.stu_class }}</span>
                     </div>
                 </div>
 
                 <div class="row">
                   <div class="field">
                         <label>เกิดวันที่</label>
-                        <span class="detail-span">{{ formData.StuBirthDate }}</span>
+                        <span class="detail-span">{{ formData.stu_birth_date }}</span>
                     </div>
                     <div class="field full-width">
                         <label>ที่อยู่</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.Address }}</span>
-                        <input v-if="isEditing" v-model="formData.Address" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.address }}</span>
+                        <input v-if="isEditing" v-model="formData.address" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ระยะทางจากบ้านมาโรงเรียน</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.Distance }}</span>
-                        <input v-if="isEditing" v-model="formData.Distance" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.distance }}</span>
+                        <input v-if="isEditing" v-model="formData.distance" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เดินทางมาโรงเรียนโดย</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.Transport }}</span>
-                        <input v-if="isEditing" v-model="formData.Transport" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.transport }}</span>
+                        <input v-if="isEditing" v-model="formData.transport" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ความสามารถพิเศษ</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.Skills }}</span>
-                        <input v-if="isEditing" v-model="formData.Skills" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.skills }}</span>
+                        <input v-if="isEditing" v-model="formData.skills" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล (บิดา)</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.FatherName }}</span>
-                        <input v-if="isEditing" v-model="formData.FatherName" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.father_name }}</span>
+                        <input v-if="isEditing" v-model="formData.father_name" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>อาชีพ</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.FatherJob }}</span>
-                        <input v-if="isEditing" v-model="formData.FatherJob" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.father_job }}</span>
+                        <input v-if="isEditing" v-model="formData.father_job" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.FatherPhone }}</span>
-                        <input v-if="isEditing" v-model="formData.FatherPhone" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.father_phone }}</span>
+                        <input v-if="isEditing" v-model="formData.father_phone" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เงินเดือน</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.FatherSalary }}</span>
-                        <input v-if="isEditing" v-model="formData.FatherSalary" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.father_salary }}</span>
+                        <input v-if="isEditing" v-model="formData.father_salary" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ระดับการศึกษา</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.FatherEdu }}</span>
-                        <input v-if="isEditing" v-model="formData.FatherEdu" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.father_edu }}</span>
+                        <input v-if="isEditing" v-model="formData.father_edu" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล (มารดา)</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.MotherName }}</span>
-                        <input v-if="isEditing" v-model="formData.MotherName" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.mother_name }}</span>
+                        <input v-if="isEditing" v-model="formData.mother_name" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>อาชีพ</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.MotherJob }}</span>
-                        <input v-if="isEditing" v-model="formData.MotherJob" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.mother_job }}</span>
+                        <input v-if="isEditing" v-model="formData.mother_job" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.MotherPhone }}</span>
-                        <input v-if="isEditing" v-model="formData.MotherPhone" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.mother_phone }}</span>
+                        <input v-if="isEditing" v-model="formData.mother_phone" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เงินเดือน</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.MotherSalary }}</span>
-                        <input v-if="isEditing" v-model="formData.MotherSalary" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.mother_salary }}</span>
+                        <input v-if="isEditing" v-model="formData.mother_salary" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ระดับการศึกษา</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.MotherEdu }}</span>
-                        <input v-if="isEditing" v-model="formData.MotherEdu" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.mother_edu }}</span>
+                        <input v-if="isEditing" v-model="formData.mother_edu" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>ชื่อ-นามสกุล (ผู้ปกครอง)</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.ParentName }}</span>
-                        <input v-if="isEditing" v-model="formData.ParentName" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.parent_name }}</span>
+                        <input v-if="isEditing" v-model="formData.parent_name" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เกี่ยวข้องเป็น</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.Relation }}</span>
-                        <input v-if="isEditing" v-model="formData.Relation" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.relation }}</span>
+                        <input v-if="isEditing" v-model="formData.relation" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>เบอร์โทรศัพท์</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.ParentPhone }}</span>
-                        <input v-if="isEditing" v-model="formData.ParentPhone" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.parent_phone }}</span>
+                        <input v-if="isEditing" v-model="formData.parent_phone" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field full-width">
                         <label>ที่อยู่ที่ติดต่อได้</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.ParentAddress }}</span>
-                        <input v-if="isEditing" v-model="formData.ParentAddress" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.parent_address }}</span>
+                        <input v-if="isEditing" v-model="formData.parent_address" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>สถานภาพของบิดามารดา</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.PStatus }}</span>
-                        <input v-if="isEditing" v-model="formData.PStatus" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.p_status }}</span>
+                        <input v-if="isEditing" v-model="formData.p_status" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="field">
                         <label>นักเรียนพักอาศัยอยู่กับใคร</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.LivesWith }}</span>
-                        <input v-if="isEditing" v-model="formData.LivesWith" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.lives_with }}</span>
+                        <input v-if="isEditing" v-model="formData.lives_with" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ครอบครัวนักเรียนมีสมาชิกทั้งหมดกี่คน</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.FamCount }}</span>
-                        <input v-if="isEditing" v-model="formData.FamCount" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.fam_count }}</span>
+                        <input v-if="isEditing" v-model="formData.fam_count" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ปัจจุบันมีพี่น้องกำลังศึกษาอยู่กี่คน</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.SibStudy }}</span>
-                        <input v-if="isEditing" v-model="formData.SibStudy" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.sib_study }}</span>
+                        <input v-if="isEditing" v-model="formData.sib_study" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ประกอบอาชีพกี่คน</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.EmpCount }}</span>
-                        <input v-if="isEditing" v-model="formData.EmpCount" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.emp_count }}</span>
+                        <input v-if="isEditing" v-model="formData.emp_count" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                     <div class="field">
                         <label>ไม่ประกอบอาชีพกี่คน</label>
-                        <span class="detail-span" v-if="!isEditing">{{ formData.UnempCount }}</span>
-                        <input v-if="isEditing" v-model="formData.UnempCount" class="Editdetail-span" @blur="stopEditing"  />
+                        <span class="detail-span" v-if="!isEditing">{{ formData.unemp_count }}</span>
+                        <input v-if="isEditing" v-model="formData.unemp_count" class="Editdetail-span" @blur="stopEditing"  />
                     </div>
                 </div>
     </div>
@@ -174,7 +174,6 @@
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Stuid from '../teacher/form-student/[term]/[stuid].vue';
 
 export default {
   props: {
@@ -193,7 +192,7 @@ export default {
   emits: ['updateData'],  // Correctly declare the emitted event
   setup(props, { emit }) {
     const formData = ref({
-      Name: "",
+      name: "",
       Nickname: "",
       StuId: "",
       StuPhone: "",
@@ -232,6 +231,7 @@ export default {
     onMounted(async () => {
       try {
         const username = localStorage.getItem('username');
+        console.log(username, props.StuId)
 
         let params = (username && props.StuId) ? props.StuId : username
         if (username) {

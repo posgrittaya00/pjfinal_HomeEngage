@@ -23,7 +23,7 @@
             <button class="toggle-button" :class="{ active: isActive === 'map' }" @click="goToMap">แผนที่บ้าน</button>
           </div>
         </div>
-        <StudentDetails :isEditing="isEditing" />
+        <StudentDetails :isEditing="isEditing" :StuId="stuId"/>
       </div>
     </div>
   </div>
@@ -32,9 +32,11 @@
 <script setup>
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import StudentDetails from '/pages/components/StudentDetails.vue';
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { ref } from 'vue';
+const route = useRoute()
 
+const stuId = route.params.stuid;
 const router = useRouter();
 const isActive = ref('info');
 
@@ -47,6 +49,8 @@ const goToProfile = () => {
   isActive.value = 'info';
   router.push('/teacher/Info-students').catch(() => {}); // เพิ่มการจับข้อผิดพลาด
 };
+
+
 </script>
   
 <style scoped>

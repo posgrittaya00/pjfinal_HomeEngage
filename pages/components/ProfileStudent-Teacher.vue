@@ -35,7 +35,7 @@
 </td>
 
           <td>
-            <button @click="goToInfoStudents" class="info-button">ข้อมูลนักเรียน</button>
+            <button @click="goToInfoStudents(student.stu_id)" class="info-button">ข้อมูลนักเรียน</button>
           </td>
         </tr>
       </tbody>
@@ -62,6 +62,8 @@ export default {
       required: true,
     },
   },
+
+  
   setup() {
     const router = useRouter();
 
@@ -69,8 +71,8 @@ export default {
       router.push(`/teacher/form-student/${term}/${StuId}`);
     };
 
-    const goToInfoStudents = () => {
-      router.push('/teacher/Info-Students');
+    const goToInfoStudents = (stu_id) => {
+      router.push(`/teacher/student/Student-Info/${stu_id}`);
     };
     const logcheck = (st) => {
       console.log(st)
@@ -81,6 +83,7 @@ export default {
     };
   },
 }
+
 </script>
 
 <style scoped>

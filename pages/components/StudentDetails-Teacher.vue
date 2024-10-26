@@ -198,7 +198,6 @@ export default {
       try {
         const username = localStorage.getItem('username');
         let params = (username && props.StuId) ? props.StuId : username;
-        
         if (username) {
           const response = await axios.get(`http://26.250.208.152:8000/api/student/${params}`);
           if (response && response.data) {

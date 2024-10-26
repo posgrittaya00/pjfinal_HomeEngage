@@ -24,11 +24,12 @@
 </template>
 
 <script setup>
-import StudentDetailsTeacher from '../components/StudentDetails-Teacher.vue';
+import StudentDetailsTeacher from '../../../components/StudentDetails-Teacher.vue';
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import { ref } from 'vue';
 import axios from 'axios';
-
+const route = useRoute()
+const stuId = route.params.stuid
 const successMessage = ref('');
 
 const saveData = async () => {

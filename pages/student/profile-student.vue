@@ -6,7 +6,7 @@
   <div class="container">
     <Sidebar />
     <div class="main-content">
-      <div class="header">aaaaa
+      <div class="header">
         <h1>HOME ENGAGE</h1>
       </div>
       <div class="content-area">
