@@ -6,7 +6,7 @@
       <div v-for="(field, fieldIndex) in section.Fields" :key="field.ID" class="field" :id="`field-${field.ID}`">
         <div class="label-section">
           <div class="field-label" v-if="!section.HasOptionsOnly">
-            {{ `${contextIndex + 1}.${fieldIndex + 1}` }} {{ field.Label }}
+            {{ contextIndex + 1 }}.{{ fieldIndex + 1 }} {{ field.Label }}
           </div>
 
           <div class="rating">
@@ -40,7 +40,7 @@
     <label>ลงชื่อผู้ปกครองนักเรียน</label>
     <input type="text" v-model="names" class="input-text" />
   </div>
-  <ImageForm/>
+  <ImageForm />
   <div class="button-container">
     <button @click="saveForm" class="save-button">บันทึก</button>
   </div>
@@ -130,7 +130,7 @@ const saveForm = async () => {
     sections: localSections.value.map(context => ({
       section_id: context.ID,
       title: context.Name,
-      fields: context.Sections.flatMap(section => 
+      fields: context.Sections.flatMap(section =>
         section.Fields.map(field => ({
           field_id: field.ID,
           value: field.value || "",

@@ -45,10 +45,6 @@ export default {
       isDragOver: false, // ใช้ตรวจจับสถานะการลากไฟล์
     };
   },
-  mounted() {
-    this.$on('start-upload', this.uploadImage);
-
-  },
   methods: {
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -93,7 +89,6 @@ export default {
         this.clearImage(); // ล้างพรีวิวเมื่ออัปโหลดสำเร็จ
       } catch (error) {
         this.message = error.response?.data?.error || 'ไม่สามารถอัปโหลดภาพได้';
-        this.$emit('upload-failure');
 
       }
     }
