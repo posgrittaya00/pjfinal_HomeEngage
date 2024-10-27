@@ -72,7 +72,7 @@ const props = defineProps({
 
 const localSections = ref(props.sections);
 const ratings = ref({});
-
+  
 const parseOptions = (options) => {
   try {
     const sanitizedOptions = options.replace(/\n/g, '').trim();
