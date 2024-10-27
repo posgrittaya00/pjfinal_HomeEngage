@@ -61,18 +61,33 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import axios from 'axios'; // Import Axios
 
 const Name = ref('');
 const stuId = ref('');
+const formattedDate = ref(''); // Keep track of the formatted date for the booking
 
 async function bookDate() {
-  if (!Name.value || !stuId.value) {
+  if (!Name.value || !stuId.value || !formattedDate.value) {
     alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-  } else {
+    return;
+  }
+  
+  const bookingData = {
+    name: Name.value,
+    studentId: stuId.value,
+    date: new Date(formattedDate.value),
+  };
+
+  try {
+    const response = await axios.post('http://localhost:8081/api/bookings/', bookingData);
     alert(`จองวันที่สำหรับ ${Name.value} รหัสประจำตัว: ${stuId.value} Date: ${formattedDate.value}`);
-    // EIEI
+  } catch (error) {
+    console.error("Error booking date:", error);
+    alert("เกิดข้อผิดพลาดในการจอง กรุณาลองอีกครั้ง");
   }
 }
+
 
 const weekDays = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
 const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
@@ -86,7 +101,7 @@ const month = ref(today.getMonth());
 const userHasBooked = ref(false);
 const previouslySelectedDate = ref(null);
 
-const formattedDate = ref(''); // ตั้งค่าเป็น ref
+// const formattedDate = ref(''); // ตั้งค่าเป็น ref
 
 const dates = computed(() => {
   const startOfMonth = new Date(year.value, month.value, 1);
