@@ -81,44 +81,44 @@ const parseOptions = (options) => {
 
 // Include ratings in the form data when saving
 const saveForm = async () => {
-  const teacherID = localStorage.getItem("username");
-  // const formData = {
-  //   teacherID: teacherID,
-  //   studentID: props.studentID,
-  //   term: props.term,
-  //   names: [
-  //     { role: "teacher", name: "John Teacher" },
-  //     { role: "student", name: "Jane Student" },
-  //     { role: "parent", name: "John Parent" }
-  //   ],
-  //   sections: localSections.value.map(ctx => ({
-  //     sectionID: ctx.ID,
-  //     title: ctx.Name,
-  //     fields: ctx.Sections.map(field => ({
-  //       fieldID: field.ID,
-  //       value: field.value,
-  //       rating: ratings.value[field.ID] || null
-  //     }))
-  //   }))
-  // };
+  let isFormComplete = true;
 
+  // ตรวจสอบ radio, textarea และ rating ว่ากรอกครบหรือไม่
+  localSections.value.forEach(context => {
+    context.Sections.forEach(section => {
+      section.Fields.forEach(field => {
+        if (field.FieldType === 'radio' && (!field.value || field.value === "")) {
+          isFormComplete = false;
+        }
+        if (field.FieldType === 'textarea' && (!field.value || field.value.trim() === "")) {
+          isFormComplete = false;
+        }
+        if (field.FieldType === 'rating' && (!ratings.value[field.ID] || ratings.value[field.ID] === null)) {
+          isFormComplete = false;
+        }
+      });
+    });
+  });
+
+  // ถ้าข้อมูลไม่ครบ แสดงการแจ้งเตือนแล้วออกจากฟังก์ชัน
+  if (!isFormComplete) {
+    alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+    return; // ออกจากฟังก์ชันโดยไม่บันทึกข้อมูล
+  }
+
+  const teacherID = localStorage.getItem("username");
   const formData = {
     teacher_id: teacherID,
     student_id: props.studentID,
     term: props.term,
-    names: [
-      // { role: "teacher", name: "John Teacher" },
-      // { role: "student", name: "Jane Student" },
-      { role: "parent", name: "John Parent" }
-    ],
     sections: localSections.value.map(context => ({
-      section_id: context.ID,  // ใช้ section_id เพื่อให้ตรงกับโครงสร้างใน Go
+      section_id: context.ID,
       title: context.Name,
-      fields: (context.Sections || []).flatMap(section => 
-        (section.Fields || []).map(field => ({
+      fields: context.Sections.flatMap(section => 
+        section.Fields.map(field => ({
           field_id: field.ID,
-          value: field.value || "",  // กำหนดค่าเป็นสตริงว่างถ้าไม่มีค่า
-          score: ratings.value[field.ID] || 1  // กำหนดคะแนนเป็น 1 ถ้าไม่ถูกตั้งค่า
+          value: field.value || "",
+          score: ratings.value[field.ID] || 1
         }))
       )
     }))
@@ -127,10 +127,9 @@ const saveForm = async () => {
   try {
     const response = await axios.post('http://localhost:8081/api/form-responses/create', formData);
     if (response.data) {
-      console.log('บันทึกฟอร์มสำเร็จ:', formData);
       alert('บันทึกฟอร์มสำเร็จ!');
+      this.$router.push('/teacher/Home-Teacher');
     } else {
-      console.log('ไม่สามารถบันทึกฟอร์มได้:', response.data.message);
       alert('บันทึกฟอร์มไม่สำเร็จ');
     }
   } catch (error) {
@@ -138,6 +137,7 @@ const saveForm = async () => {
     alert('บันทึกฟอร์มไม่สำเร็จ');
   }
 };
+
 </script>
 
 
