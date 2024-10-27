@@ -361,6 +361,7 @@ const saveForm = async () => {
   background-color: #56A7F5;
   color: white;
   border: none;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
 }

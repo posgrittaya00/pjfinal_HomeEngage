@@ -76,7 +76,7 @@ export default {
     },
     async uploadImage() {
       if (!this.imageFile || !this.stuId) {
-        this.message = 'กรุณาอัปโหลดภาพและกรอกรหัสนักเรียน';
+        this.message = 'อัปโหลดเสร็จสิ้น';
         return;
       }
 
@@ -90,12 +90,12 @@ export default {
             'Content-Type': 'multipart/form-data',
           },
         });
-        this.message = response.data.message;
+        this.message = 'อัปโหลดเสร็จสิ้น'; // ข้อความสำเร็จ
         this.clearImage(); // ล้างพรีวิวเมื่ออัปโหลดสำเร็จ
       } catch (error) {
         this.message = error.response?.data?.error || 'ไม่สามารถอัปโหลดภาพได้';
       }
-    },
+    }
   },
 };
 </script>
