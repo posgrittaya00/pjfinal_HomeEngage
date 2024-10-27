@@ -67,7 +67,7 @@ const props = defineProps({
     default: null
   }
 });
- 
+
 const localSections = ref(props.sections);
 
 // Initialize ratings object to store ratings by field ID
