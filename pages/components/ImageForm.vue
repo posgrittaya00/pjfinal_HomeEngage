@@ -62,6 +62,8 @@ export default {
       this.imageFile = file;
       if (file) {
         this.imagePreview = URL.createObjectURL(file);
+        this.$emit('file-selected', file); // Emit file to parent
+
       }
     },
     clearImage() {

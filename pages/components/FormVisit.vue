@@ -40,7 +40,7 @@
     <label>ลงชื่อผู้ปกครองนักเรียน</label>
     <input type="text" v-model="names" class="input-text" />
   </div>
-  <ImageForm />
+  <ImageForm @file-selected="handleFileSelected" />
   <div class="button-container">
     <button @click="saveForm" class="save-button">บันทึก</button>
   </div>
@@ -51,7 +51,6 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import ImageForm from './ImageForm.vue';
 
-const names = ref('');
 
 const props = defineProps({
   sections: {
@@ -68,10 +67,11 @@ const props = defineProps({
   }
 });
 
+const imageFile = ref(null); // Store the selected file
+const isUploadSuccessful = ref(false);
 const localSections = ref(props.sections);
-
-// Initialize ratings object to store ratings by field ID
 const ratings = ref({});
+const names = ref('');
 
 const parseOptions = (options) => {
   try {
@@ -80,6 +80,34 @@ const parseOptions = (options) => {
   } catch (error) {
     console.error("Failed to parse options:", error);
     return [];
+  }
+};
+
+const handleFileSelected = (file) => {
+  imageFile.value = file;
+};
+
+const uploadImage = async () => {
+  if (!imageFile.value) {
+    alert('กรุณาเลือกไฟล์');
+    return false;
+  }
+
+  const formData = new FormData();
+  formData.append('image', imageFile.value);
+  formData.append('stu_id', props.studentID);
+
+  try {
+    await axios.post('http://26.250.208.152:8081/api/images/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    isUploadSuccessful.value = true;
+    alert('อัปโหลดเสร็จสิ้น');
+    return true;
+  } catch (error) {
+    alert(error.response?.data?.error || 'ไม่สามารถอัปโหลดภาพได้');
+    isUploadSuccessful.value = false;
+    return false;
   }
 };
 
@@ -122,6 +150,13 @@ const saveForm = async () => {
     return;
   }
 
+  // Upload the image
+  const uploadSuccess = await uploadImage();
+  if (!uploadSuccess) {
+    alert("การอัปโหลดรูปภาพล้มเหลว");
+    return;
+  }
+
   const teacherID = localStorage.getItem("username");
   const formData = {
     teacher_id: teacherID,
@@ -141,7 +176,7 @@ const saveForm = async () => {
   };
 
   try {
-    const response = await axios.post('http://localhost:8081/api/form-responses/create', formData);
+    const response = await axios.post('http://26.250.208.152:8081/api/form-responses/create', formData);
     if (response.data) {
       alert('บันทึกฟอร์มสำเร็จ!');
       this.$router.push('/teacher/Home-Teacher');
