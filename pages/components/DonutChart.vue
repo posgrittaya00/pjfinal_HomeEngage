@@ -5,10 +5,14 @@
       <button @click="setTerm('term2')" :class="['term-button', { active: activeTerm === 'term2' }]">เทอม 2</button>
     </div>
     <div class="button-group">
-      <button @click="setActiveChart('chart1')" :class="['button', 'chart1', { active: activeChart === 'chart1' }]">บริบท</button>
-      <button @click="setActiveChart('chart2')" :class="['button', 'chart2', { active: activeChart === 'chart2' }]">ครอบครัว</button>
-      <button @click="setActiveChart('chart3')" :class="['button', 'chart3', { active: activeChart === 'chart3' }]">นักเรียน</button>
-      <button @click="setActiveChart('chart4')" :class="['button', 'chart4', { active: activeChart === 'chart4' }]">ความต้องการ</button>
+      <button @click="setActiveChart('chart1')"
+        :class="['button', 'chart1', { active: activeChart === 'chart1' }]">บริบท</button>
+      <button @click="setActiveChart('chart2')"
+        :class="['button', 'chart2', { active: activeChart === 'chart2' }]">ครอบครัว</button>
+      <button @click="setActiveChart('chart3')"
+        :class="['button', 'chart3', { active: activeChart === 'chart3' }]">นักเรียน</button>
+      <button @click="setActiveChart('chart4')"
+        :class="['button', 'chart4', { active: activeChart === 'chart4' }]">ความต้องการ</button>
     </div>
 
     <!-- แสดงข้อมูลในตารางและกราฟ -->
@@ -91,12 +95,12 @@ const fetchData = async () => {
         chart4: data.terms['1'].sections['ความต้องการต่อโรงเรียน / อบจ. ( School – S )']
       };
     } else {
-      totalStudents.value = data.terms['2'].total_students;
+      totalStudents.value = data.terms['2']?.total_students || 0;
       dataWithPercentage.value = {
-        chart1: data.terms['2'].sections['บริบท ( Context – C )'],
-        chart2: data.terms['2'].sections['ครอบครัว ( Family – F )'],
-        chart3: data.terms['2'].sections['นักเรียน (Student – S )'],
-        chart4: data.terms['2'].sections['ความต้องการต่อโรงเรียน / อบจ. ( School – S )']
+        chart1: data.terms['2']?.sections['บริบท ( Context – C )'] || [],
+        chart2: data.terms['2']?.sections['ครอบครัว ( Family – F )'] || [],
+        chart3: data.terms['2']?.sections['นักเรียน (Student – S )'] || [],
+        chart4: data.terms['2']?.sections['ความต้องการต่อโรงเรียน / อบจ. ( School – S )'] || []
       };
     }
 
@@ -292,7 +296,7 @@ onMounted(() => {
   min-width: 120px;
 }
 
-.button.active{
+.button.active {
   color: #ffffff;
 }
 
@@ -316,12 +320,35 @@ onMounted(() => {
   background-color: #D3D3D3;
 }
 
-.button.chart1:hover { background-color: #F0C3FF; color: white; }
-.button.chart2:hover { background-color: #97E6FF; color: white; }
-.button.chart3:hover { background-color: #FFC27E; color: white; }
-.button.chart4:hover { background-color: #FF8784; color: white; }
-.chart { margin-top: 20px; }
-.summary { margin-top: 20px; font-family: 'Inter', sans-serif; }
+.button.chart1:hover {
+  background-color: #F0C3FF;
+  color: white;
+}
+
+.button.chart2:hover {
+  background-color: #97E6FF;
+  color: white;
+}
+
+.button.chart3:hover {
+  background-color: #FFC27E;
+  color: white;
+}
+
+.button.chart4:hover {
+  background-color: #FF8784;
+  color: white;
+}
+
+.chart {
+  margin-top: 20px;
+}
+
+.summary {
+  margin-top: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
 h3 {
   color: #333;
   text-align: left;
@@ -330,6 +357,7 @@ h3 {
   font-size: 14px;
   font-family: 'Inter', sans-serif;
 }
+
 table {
   width: 40%;
   margin-left: auto;
@@ -338,12 +366,17 @@ table {
   margin-top: 0;
   font-family: 'Inter', sans-serif;
 }
-table, td {
+
+table,
+td {
   border: none;
   padding: 4px;
   text-align: left;
   font-size: 14px;
   color: #666;
 }
-tr:nth-child(odd) { background-color: #f9f9f9; }
+
+tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
 </style>
