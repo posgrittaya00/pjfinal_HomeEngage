@@ -40,7 +40,7 @@
     <label>ลงชื่อผู้ปกครองนักเรียน</label>
     <input type="text" v-model="names" class="input-text" />
   </div>
-  <ImageForm/>
+  <ImageForm ref="imageFormRef" />
   <div class="button-container">
     <button @click="saveForm" class="save-button">บันทึก</button>
   </div>
@@ -52,6 +52,7 @@ import axios from 'axios';
 import ImageForm from './ImageForm.vue';
 
 const names = ref('');
+const imageFormRef = ref(null); // Reference to ImageForm component
 
 const props = defineProps({
   sections: {
@@ -69,8 +70,6 @@ const props = defineProps({
 });
 
 const localSections = ref(props.sections);
-
-// Initialize ratings object to store ratings by field ID
 const ratings = ref({});
 
 const parseOptions = (options) => {
@@ -83,12 +82,10 @@ const parseOptions = (options) => {
   }
 };
 
-// Include ratings in the form data when saving
 const saveForm = async () => {
   let isFormComplete = true;
   let firstIncompleteField = null;
 
-  // ตรวจสอบว่า radio, textarea, และ rating กรอกครบหรือไม่
   localSections.value.forEach((context) => {
     context.Sections.forEach((section) => {
       section.Fields.forEach((field) => {
@@ -108,7 +105,6 @@ const saveForm = async () => {
     });
   });
 
-  // ถ้าข้อมูลไม่ครบ แสดงการแจ้งเตือนและเลื่อนไปที่ฟิลด์หลังจากกดโอเค
   if (!isFormComplete) {
     alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องที่จำเป็น");
     setTimeout(() => {
@@ -122,6 +118,8 @@ const saveForm = async () => {
     return;
   }
 
+  await imageFormRef.value.uploadImage();
+
   const teacherID = localStorage.getItem("username");
   const formData = {
     teacher_id: teacherID,
@@ -130,7 +128,7 @@ const saveForm = async () => {
     sections: localSections.value.map(context => ({
       section_id: context.ID,
       title: context.Name,
-      fields: context.Sections.flatMap(section => 
+      fields: context.Sections.flatMap(section =>
         section.Fields.map(field => ({
           field_id: field.ID,
           value: field.value || "",
