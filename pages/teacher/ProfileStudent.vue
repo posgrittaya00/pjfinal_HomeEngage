@@ -102,7 +102,7 @@ const saveData = async () => {
   font-size: 18px;
   color: #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  margin-bottom: 35px;
 }
 
 .save-button {
