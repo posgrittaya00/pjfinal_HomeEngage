@@ -69,7 +69,7 @@ const props = defineProps({
     default: null
   }
 });
-
+ 
 const localSections = ref(props.sections);
 const ratings = ref({});
   
