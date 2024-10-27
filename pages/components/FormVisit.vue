@@ -3,7 +3,7 @@
     <h3 class="main-section">{{ context.Name }}</h3>
     <div v-for="(section, sectionIndex) in context.Sections" :key="sectionIndex" class="section">
       <h3 class="section-title">{{ section.Title }}</h3>
-      <div v-for="(field, fieldIndex) in section.Fields" :key="field.ID" class="field">
+      <div v-for="(field, fieldIndex) in section.Fields" :key="field.ID" class="field" :id="`field-${field.ID}`">
         <div class="label-section">
           <div class="field-label" v-if="!section.HasOptionsOnly">
             {{ `${contextIndex + 1}.${fieldIndex + 1}` }} {{ field.Label }}
@@ -20,7 +20,6 @@
         </div>
 
         <div class="field-options">
-          <!-- Existing Radio Group for other options -->
           <div v-if="field.FieldType === 'radio'" class="radio-group">
             <div v-for="(option, index) in parseOptions(field.Options)" :key="index" class="radio-option">
               <label class="radio-label">
@@ -30,13 +29,16 @@
             </div>
           </div>
           <input v-if="field.FieldType === 'textarea'" v-model="field.value" class="input-text" />
-          <input v-if="field.FieldType === 'text'" type="text" v-model="field.value" class="input-text" />
         </div>
       </div>
     </div>
   </div>
   <div v-else>
     <p>No sections available</p>
+  </div>
+  <div class="input-group">
+    <label>ลงชื่อผู้ปกครองนักเรียน</label>
+    <input type="text" v-model="names" class="input-text" />
   </div>
   <ImageForm/>
   <div class="button-container">
@@ -45,9 +47,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import ImageForm from './ImageForm.vue';
+
+const names = ref('');
 
 const props = defineProps({
   sections: {
@@ -82,28 +86,40 @@ const parseOptions = (options) => {
 // Include ratings in the form data when saving
 const saveForm = async () => {
   let isFormComplete = true;
+  let firstIncompleteField = null;
 
-  // ตรวจสอบ radio, textarea และ rating ว่ากรอกครบหรือไม่
-  localSections.value.forEach(context => {
-    context.Sections.forEach(section => {
-      section.Fields.forEach(field => {
+  // ตรวจสอบว่า radio, textarea, และ rating กรอกครบหรือไม่
+  localSections.value.forEach((context) => {
+    context.Sections.forEach((section) => {
+      section.Fields.forEach((field) => {
         if (field.FieldType === 'radio' && (!field.value || field.value === "")) {
           isFormComplete = false;
+          if (!firstIncompleteField) firstIncompleteField = `field-${field.ID}`;
         }
         if (field.FieldType === 'textarea' && (!field.value || field.value.trim() === "")) {
           isFormComplete = false;
+          if (!firstIncompleteField) firstIncompleteField = `field-${field.ID}`;
         }
         if (field.FieldType === 'rating' && (!ratings.value[field.ID] || ratings.value[field.ID] === null)) {
           isFormComplete = false;
+          if (!firstIncompleteField) firstIncompleteField = `field-${field.ID}`;
         }
       });
     });
   });
 
-  // ถ้าข้อมูลไม่ครบ แสดงการแจ้งเตือนแล้วออกจากฟังก์ชัน
+  // ถ้าข้อมูลไม่ครบ แสดงการแจ้งเตือนและเลื่อนไปที่ฟิลด์หลังจากกดโอเค
   if (!isFormComplete) {
-    alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-    return; // ออกจากฟังก์ชันโดยไม่บันทึกข้อมูล
+    alert("กรุณากรอกข้อมูลให้ครบถ้วนในช่องที่จำเป็น");
+    setTimeout(() => {
+      const element = document.getElementById(firstIncompleteField);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        console.error(`ไม่พบฟิลด์ ${firstIncompleteField}`);
+      }
+    }, 0);
+    return;
   }
 
   const teacherID = localStorage.getItem("username");
@@ -137,11 +153,28 @@ const saveForm = async () => {
     alert('บันทึกฟอร์มไม่สำเร็จ');
   }
 };
-
 </script>
 
-
 <style scoped>
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  margin-left: 60px;
+}
+
+.input-group label {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.input-group .input-text {
+  width: 49.6%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .rating {
   display: flex;
   gap: 10px;
