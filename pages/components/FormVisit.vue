@@ -38,6 +38,7 @@
   <div v-else>
     <p>No sections available</p>
   </div>
+  <ImageForm/>
   <div class="button-container">
     <button @click="saveForm" class="save-button">บันทึก</button>
   </div>
@@ -46,6 +47,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import axios from 'axios';
+import ImageForm from './ImageForm.vue';
 
 const props = defineProps({
   sections: {
