@@ -292,10 +292,8 @@ onMounted(() => {
   min-width: 120px;
 }
 
-.button.active, .button.activeTerm {
-  background-color: #ECECEC;
-  color: #56A7F5;
-  font-weight: bold;
+.button.active{
+  color: #ffffff;
 }
 
 .button.chart1.active {
