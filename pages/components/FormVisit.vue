@@ -72,7 +72,7 @@ const localSections = ref(props.sections);
 
 // Initialize ratings object to store ratings by field ID
 const ratings = ref({});
-
+  
 const parseOptions = (options) => {
   try {
     const sanitizedOptions = options.replace(/\n/g, '').trim();
