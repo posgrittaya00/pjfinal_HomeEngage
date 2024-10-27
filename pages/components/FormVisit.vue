@@ -40,7 +40,7 @@
     <label>ลงชื่อผู้ปกครองนักเรียน</label>
     <input type="text" v-model="names" class="input-text" />
   </div>
-  <ImageForm ref="imageFormRef" />
+  <ImageForm ref="imageFormRef" @upload-success="isUploadSuccessful = true" @upload-failure="isUploadSuccessful = false"  />
   <div class="button-container">
     <button @click="saveForm" class="save-button">บันทึก</button>
   </div>
@@ -52,7 +52,8 @@ import axios from 'axios';
 import ImageForm from './ImageForm.vue';
 
 const names = ref('');
-const imageFormRef = ref(null); // Reference to ImageForm component
+const imageFormRef = ref(null); // Reference to ImageForm
+const isUploadSuccessful = ref(false);
 
 const props = defineProps({
   sections: {
@@ -83,6 +84,27 @@ const parseOptions = (options) => {
 };
 
 const saveForm = async () => {
+
+  isUploadSuccessful.value = false;
+  imageFormRef.value.$emit('start-upload');
+
+  await new Promise((resolve) => {
+    imageFormRef.value.$on('upload-success', () => {
+      isUploadSuccessful.value = true;
+      resolve();
+    });
+    imageFormRef.value.$on('upload-failure', () => {
+      alert("Image upload failed");
+      resolve();
+    });
+  });
+
+  // Step 3: Check if upload was successful before saving the form data
+  if (!isUploadSuccessful.value) {
+    return; // Stop if upload failed
+  }
+
+
   let isFormComplete = true;
   let firstIncompleteField = null;
 
@@ -117,8 +139,6 @@ const saveForm = async () => {
     }, 0);
     return;
   }
-
-  await imageFormRef.value.uploadImage();
 
   const teacherID = localStorage.getItem("username");
   const formData = {

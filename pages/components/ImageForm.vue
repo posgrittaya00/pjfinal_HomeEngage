@@ -4,15 +4,8 @@
     <p class="subtitle">เพิ่มเอกสารของคุณที่นี่ และคุณสามารถอัปโหลดไฟล์ได้สูงสุด 1 ไฟล์</p>
     <form @submit.prevent="uploadImage" class="upload-form">
       <!-- Drop Zone -->
-      <div 
-        class="drop-zone" 
-        @dragover.prevent 
-        @drop.prevent="handleDrop" 
-        :class="{ 'is-dragover': isDragOver }"
-        @dragenter.prevent="isDragOver = true"
-        @dragleave.prevent="isDragOver = false"
-        @click="triggerFileInput"
-      >
+      <div class="drop-zone" @dragover.prevent @drop.prevent="handleDrop" :class="{ 'is-dragover': isDragOver }"
+        @dragenter.prevent="isDragOver = true" @dragleave.prevent="isDragOver = false" @click="triggerFileInput">
         <p v-if="!imageFile">ลากและวางไฟล์ที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
         <input type="file" @change="onFileChange" ref="fileInput" class="file-input" />
       </div>
@@ -25,7 +18,9 @@
       <div class="image-preview-container">
         <img :src="imagePreview" alt="Image Preview" class="image-preview" />
         <button @click="clearImage" class="delete-button">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-x">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -49,6 +44,10 @@ export default {
       imagePreview: null, // เก็บ URL ของภาพพรีวิว
       isDragOver: false, // ใช้ตรวจจับสถานะการลากไฟล์
     };
+  },
+  mounted() {
+    this.$on('start-upload', this.uploadImage);
+
   },
   methods: {
     triggerFileInput() {
@@ -92,10 +91,12 @@ export default {
         });
         this.message = 'อัปโหลดเสร็จสิ้น'; // ข้อความสำเร็จ
         this.clearImage(); // ล้างพรีวิวเมื่ออัปโหลดสำเร็จ
-        this.$emit('image-uploaded', response.data);
+        this.$emit('upload-success');
 
       } catch (error) {
         this.message = error.response?.data?.error || 'ไม่สามารถอัปโหลดภาพได้';
+        this.$emit('upload-failure');
+
       }
     }
   },
@@ -154,7 +155,8 @@ export default {
 }
 
 .file-input {
-  display: none; /* ซ่อน input file */
+  display: none;
+  /* ซ่อน input file */
 }
 
 .text-input {
@@ -191,11 +193,13 @@ h3 {
 .image-preview-container {
   position: relative;
   display: block;
-  width: 100%; /* ขยายความกว้างให้เต็ม */
+  width: 100%;
+  /* ขยายความกว้างให้เต็ม */
 }
 
 .image-preview {
-  width: 100%; /* กำหนดความกว้างให้เต็มที่ container */
+  width: 100%;
+  /* กำหนดความกว้างให้เต็มที่ container */
   max-height: 300px;
   border-radius: 8px;
   margin-top: 0.5rem;
@@ -203,11 +207,14 @@ h3 {
 
 .delete-button {
   position: absolute;
-  top: 15px; /* เพิ่ม margin-top ลงมา */
+  top: 15px;
+  /* เพิ่ม margin-top ลงมา */
   right: 10px;
-  background: none; /* เอาพื้นหลังออก */
+  background: none;
+  /* เอาพื้นหลังออก */
   border: none;
-  color: #ff4d4d; /* สีแดง */
+  color: #ff4d4d;
+  /* สีแดง */
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -216,7 +223,8 @@ h3 {
 }
 
 .delete-button:hover {
-  color: #e60000; /* เปลี่ยนสีแดงเข้มเมื่อ hover */
+  color: #e60000;
+  /* เปลี่ยนสีแดงเข้มเมื่อ hover */
 }
 
 .status-message {
