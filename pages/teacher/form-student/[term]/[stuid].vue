@@ -26,8 +26,6 @@ import { useRoute } from 'vue-router';
 import axios from 'axios';
 import SidebarTeacher from '/pages/components/SidebarTeacher.vue';
 import FormVisit from '/pages/components/FormVisit.vue';
-// teacher/form-student/[term]/[studi].vue
-// teacher/form-student/2/64001.vue
 
 const route = useRoute();
 const stuId = route.params.stuid;

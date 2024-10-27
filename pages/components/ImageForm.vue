@@ -91,8 +91,6 @@ export default {
         });
         this.message = 'อัปโหลดเสร็จสิ้น'; // ข้อความสำเร็จ
         this.clearImage(); // ล้างพรีวิวเมื่ออัปโหลดสำเร็จ
-        this.$emit('upload-success');
-
       } catch (error) {
         this.message = error.response?.data?.error || 'ไม่สามารถอัปโหลดภาพได้';
         this.$emit('upload-failure');
