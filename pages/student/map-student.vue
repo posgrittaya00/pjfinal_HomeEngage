@@ -48,10 +48,10 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import Sidebar from '/pages/components/Sidebar.vue';
 
-// ข้อมูลของผู้ใช้งาน รวมถึง URL แผนที่
 const user = ref({
   Name: "", // ชื่อผู้ใช้งานที่จะดึงมาจากฐานข้อมูล
-  MapUrl: "" // URL แผนที่ที่จะดึงมาจากฐานข้อมูล
+  MapUrl: "", // URL แผนที่ที่จะดึงมาจากฐานข้อมูล
+  id: null // ID ของผู้ใช้
 });
 
 const isLoading = ref(false);
@@ -61,7 +61,6 @@ const isEditing = ref(JSON.parse(localStorage.getItem('isEditing')) || false);
 const mapInput = ref('');
 const router = useRouter(); 
 
-// ฟังก์ชันจัดการการสลับหน้าระหว่างแผนที่และโปรไฟล์
 const goToMap = () => {
   isActive.value = 'map'; 
   router.push('/student/Map-student'); 
@@ -88,10 +87,11 @@ const fetchData = async () => {
       throw new Error('Username not found in localStorage');
     }
 
-    const response = await axios.get(`http://26.250.208.152:8000/api/student/${username}`);
+    const response = await axios.get(`http://localhost:8081/api/student/${username}`);
     if (response && response.data) {
       user.value.Name = response.data.Name; // ตั้งชื่อผู้ใช้จาก API
       user.value.MapUrl = response.data.MapUrl; // ตั้ง URL ของแผนที่จาก API
+      user.value.id = response.data.id; // ตั้งค่า ID ของผู้ใช้
       localStorage.setItem('MapUrl', user.value.MapUrl); // เก็บ URL ลง localStorage
     } else {
       throw new Error('Failed to fetch data');
@@ -111,8 +111,7 @@ const fetchMapUrl = () => {
   }
 };
 
-// ฟังก์ชันสำหรับอัปเดต URL แผนที่ใหม่จาก input
-const updateMapUrl = () => {
+const updateMapUrl = async () => {
   const url = mapInput.value.trim();
   let lat, lng;
 
@@ -126,6 +125,7 @@ const updateMapUrl = () => {
     /(-?\d{1,3})°(\d{1,2})'(\d{1,2}\.\d+)"([NS])\s+(-?\d{1,3})°(\d{1,2})'(\d{1,2}\.\d+)"([EW])/
   ];
 
+  // ดึงพิกัดจาก URL ที่ป้อนไว้
   for (let pattern of patterns) {
     const match = url.match(pattern);
     if (match) {
@@ -140,6 +140,7 @@ const updateMapUrl = () => {
     }
   }
 
+  // ตรวจสอบลิงก์ Google Maps ที่ป้อนไว้
   if (!lat && url.includes('maps.app.goo.gl')) {
     const proceed = confirm('ลิงก์ที่คุณป้อนไม่มีพิกัดโดยตรง กด OK เพื่อเปิดลิงก์ในแท็บใหม่ แล้วคัดลอก URL เต็มจากแถบที่อยู่ของเบราว์เซอร์');
     if (proceed) {
@@ -149,16 +150,41 @@ const updateMapUrl = () => {
   }
 
   if (lat && lng) {
-    // ใช้ URL ที่ถูกต้องสำหรับการฝัง iframe
-    user.value.MapUrl = `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;
-    localStorage.setItem('MapUrl', user.value.MapUrl); 
-    mapInput.value = ''; 
+    const embedUrl = `https://maps.google.com/maps?q=${lat},${lng}&output=embed`;  // สร้าง URL สำหรับแสดงแผนที่
+
+    // เก็บ URL แผนที่ลง localStorage
+    localStorage.setItem('MapUrl', embedUrl);
+    mapInput.value = '';
+
+    try {
+      // ดึง username จาก localStorage
+      const username = localStorage.getItem('username'); // ตรวจสอบค่าจาก localStorage
+      if (!username) {
+        alert("Username not found in localStorage");
+        return;
+      }
+
+      // ส่งคำขอ PUT เพื่ออัปเดต map_url
+      const response = await axios.put(`http://localhost:8081/api/student/${username}`, {
+        map_url: embedUrl
+      });
+
+      if (response.status === 200) {
+        console.log("API response:", response.data);
+        user.value.MapUrl = embedUrl; // อัปเดต URL ใน data
+        alert("Map URL updated successfully");
+      } else {
+        alert("Failed to update Map URL");
+      }
+    } catch (error) {
+      console.error("Error updating Map URL:", error);
+      alert("An error occurred while updating Map URL");
+    }
   } else {
-    alert('ไม่สามารถดึงพิกัดจาก URL ได้');
+    alert("ไม่สามารถดึงพิกัดจาก URL ได้");
   }
 };
 
-// ฟังก์ชันแปลง DMS เป็น Decimal Degrees
 const convertDMSToDecimal = (degrees, minutes, seconds, direction) => {
   let decimal = parseFloat(degrees) + parseFloat(minutes) / 60 + parseFloat(seconds) / 3600;
   if (direction === 'S' || direction === 'W') {
@@ -167,7 +193,6 @@ const convertDMSToDecimal = (degrees, minutes, seconds, direction) => {
   return decimal;
 };
 
-// ดึงข้อมูลเมื่อ component ถูกสร้าง
 onMounted(() => {
   fetchMapUrl(); // ดึง URL จาก localStorage ถ้ามี
   fetchData(); // ดึงข้อมูลจาก API

@@ -9,7 +9,7 @@
         <p v-if="!imageFile">ลากและวางไฟล์ที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
         <input type="file" @change="onFileChange" ref="fileInput" class="file-input" />
       </div>
-      <button type="submit" class="upload-button">อัปโหลด</button>
+      <!-- <button type="submit" class="upload-button">อัปโหลด</button> -->
     </form>
 
     <!-- แสดงพรีวิวภาพถ้ามีการเลือกไฟล์แล้ว พร้อมปุ่มลบ -->

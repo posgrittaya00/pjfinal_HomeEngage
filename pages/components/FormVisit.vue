@@ -49,9 +49,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router'; // นำเข้า useRouter
 import ImageForm from './ImageForm.vue';
 
-
+const router = useRouter();
 const props = defineProps({
   sections: {
     type: Array,
@@ -179,10 +180,8 @@ const saveForm = async () => {
     const response = await axios.post('http://26.250.208.152:8081/api/form-responses/create', formData);
     if (response.data) {
       alert('บันทึกฟอร์มสำเร็จ!');
-      this.$router.push('/teacher/Home-Teacher');
-    } else {
-      alert('บันทึกฟอร์มไม่สำเร็จ');
-    }
+      router.push('/teacher/Home-Teacher'); // ใช้ router เพื่อเปลี่ยนเส้นทาง
+    } 
   } catch (error) {
     console.error('ไม่สามารถบันทึกฟอร์มได้:', error);
     alert('บันทึกฟอร์มไม่สำเร็จ');
